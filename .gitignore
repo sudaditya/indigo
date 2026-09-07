@@ -24,3 +24,5 @@ postgres_data/
 __pycache__/
 .DS_Store
 .venv/
+# Corpus (source PDFs kept local, generated text/XML committed)
+corpus/pdfs/

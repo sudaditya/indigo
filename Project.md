@@ -73,3 +73,41 @@ docker compose up
 - Session cadence for the build (daily / weekly / weekend)?
 - Anthropic API key setup — verified but not yet used.
 - Whether to migrate to ~/Projects/rbi-registry from ~/Downloads/... at some point.
+
+### Session 4 (continued) — 2026-09-07
+
+Attempted Path B: enable POST on Indigo's WorkViewSet.
+
+Progress:
+- Confirmed URL routing goes through indigo_api.views.works.WorkViewSet.
+- Confirmed Docker file sync lags on Mac; requires `up --build` to force
+  the container to pick up code changes.
+- Changed WorkViewSet from ReadOnlyModelViewSet to ModelViewSet, verified
+  MRO now includes CreateModelMixin.
+- POST endpoint now exists and receives requests.
+
+Blocker discovered:
+- WorkSerializer has writable dotted-source fields (source='foo.bar').
+  DRF requires a custom .create() method to handle these, or a separate
+  WorkCreateSerializer. Neither exists.
+- DocumentSerializer will hit the same issue.
+
+Reverted WorkViewSet to ReadOnlyModelViewSet to keep main branch clean.
+
+Honest finding: Indigo was designed for browser workflows, not programmatic
+ingestion. Every API operation our POC needs (create Work, create Document,
+create Amendment, cross-team dashboards, etc.) will require similar
+serializer engineering. Building the API layer on top of Indigo is a
+6-8 week effort we hadn't budgeted.
+
+### Decision needed before next session:
+Option 1: Push through Path B — write custom serializers (2-3 sessions to first success)
+Option 2: Load via Django ORM directly (1 session, pragmatic, defers API question)
+Option 3: Reconsider fork-and-strip vs full custom given what we've learned
+
+Recommended: Option 2 next session. Get data flowing first. Decide 1 vs 3 with more info.
+
+### Phase status
+- [x] Phase 0 — Indigo running with India as a Place
+- [~] Phase 2 — PDF→AKN pipeline works. Load into Indigo still blocked.
+- [ ] Phase 1, 3, 4, 5

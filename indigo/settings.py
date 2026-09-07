@@ -593,3 +593,17 @@ FOP_FONT_PATH = os.environ.get("FOP_FONT_PATH")
 TEST_RUNNER = os.environ.get('TEST_RUNNER', 'django.test.runner.DiscoverRunner')
 # only used by xmlrunner https://github.com/xmlrunner/unittest-xml-reporting#django-support
 TEST_OUTPUT_DIR = './test-reports'
+
+
+# ============================================================
+# RBI Registry POC overrides
+# ============================================================
+# Indigo defaults to session-only auth (browser cookies), which
+# doesn't work for scripts. Enable Token and Basic auth so our
+# ingestion pipeline (and later, custom frontend) can talk to
+# the REST API.
+REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
+    'rest_framework.authentication.SessionAuthentication',
+    'rest_framework.authentication.TokenAuthentication',
+    'rest_framework.authentication.BasicAuthentication',
+]
