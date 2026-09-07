@@ -46,16 +46,16 @@ COPY package*.json /app/
 RUN npm ci --no-audit --ignore-scripts --omit=dev
 
 # Bring pip up to date; pip <= 22 (the default on ubuntu 22.04) is not supported
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip --break-system-packages --ignore-installed
 
 # These are production-only dependencies
-RUN pip install psycopg==3.2.12
+RUN pip install psycopg==3.2.12 --break-system-packages
 
 # Copy the code
 COPY . /app
 
 # Install python requirements
-RUN pip install -e .
+RUN pip install -e . --break-system-packages
 
 # Compile static assets.
 RUN python manage.py compilescss

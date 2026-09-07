@@ -16,3 +16,10 @@ docs/_build
 node_modules/
 .coverage
 *.egg-info
+# RBI POC additions
+postgres_data/
+.env
+.env.local
+*.pyc
+__pycache__/
+.DS_Store
