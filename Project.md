@@ -10,8 +10,8 @@ Ingest, version-control, and enable structured amendment of RBI's ~250 Master Di
 ## Stack
 - Backend: Django (from Indigo fork) + Postgres — runs in Docker
 - Frontend: React + Vite (to be built, replacing Indigo's Django templates)
-- LLM: Anthropic API (Claude) for PDF ingestion
-- Hosting: Local (MacBook Air) for POC; RBI infrastructure later
+   - LLM: Google Gemini API (gemini-3.6-flash, free tier) for PDF ingestion
+   - Hosting: Local (MacBook Air) for POC; RBI infrastructure later
 
 ## Repo
 - GitHub: https://github.com/sudaditya/indigo (fork of laws-africa/indigo)
@@ -61,6 +61,31 @@ docker compose up
 - Verified UI at /places/in shows India with an "Add new work" button.
 - Phase 0 complete. Backend, DB, jurisdictions, permissions all live.
 
+### Session 3 — 2026-09-07 (evening)
+- Switched from Anthropic to Gemini (free tier). Model: gemini-3.6-flash.
+- Installed google-genai SDK, python-dotenv, pypdf, requests.
+- Set up corpus/{pdfs,text,akn} folders. Source PDFs gitignored, generated
+  text and XML committed.
+- Wrote scripts/extract_pdf.py — PDF → plain text via pypdf.
+- Wrote scripts/ingest_pdf_to_akn.py — text → AKN XML via Gemini.
+  Design: LLM produces only <body>; Python wraps FRBR meta + preface
+  deterministically. Prompt lives in scripts/prompts/extract_akn_body.md.
+- MD 290 pipeline result: 5 pages, 7,571 chars → 11,728 chars valid AKN 3.0 XML.
+  Tokens: 3,093 in, 2,621 out. Cost: $0 (free tier).
+  Quality: ~95% correct on first try. Minor stylistic issues (see prompt).
+
+### Session 4 — 2026-09-07 (late evening) — Path B attempt
+- Explored Indigo's REST API URL structure. Learned:
+  - URLs don't accept trailing slashes (^works$ regex, not ^works/$)
+  - Only SessionAuthentication enabled — added Token+Basic via override
+    in indigo/settings.py bottom.
+  - WorkViewSet is ReadOnlyModelViewSet — no POST endpoint at all.
+- Attempted Path B: changed to ModelViewSet, forced Docker rebuild.
+  POST endpoint appeared but hit 500: WorkSerializer has writable dotted-source
+  fields that require a custom .create() method.
+- Reverted WorkViewSet to ReadOnlyModelViewSet to keep main branch clean.
+- Decided next session (5): pursue Option 2 — load via Django ORM.
+
 ### Learnings so far
 - Indigo setup requires manual fixture loading and wrapper creation.
   In Phase 1, package all of this into a single management command.
@@ -74,7 +99,7 @@ docker compose up
 - Anthropic API key setup — verified but not yet used.
 - Whether to migrate to ~/Projects/rbi-registry from ~/Downloads/... at some point.
 
-### Session 4 (continued) — 2026-09-07
+### Session 4 (wrap-up) — 2026-09-07
 
 Attempted Path B: enable POST on Indigo's WorkViewSet.
 
@@ -111,3 +136,58 @@ Recommended: Option 2 next session. Get data flowing first. Decide 1 vs 3 with m
 - [x] Phase 0 — Indigo running with India as a Place
 - [~] Phase 2 — PDF→AKN pipeline works. Load into Indigo still blocked.
 - [ ] Phase 1, 3, 4, 5
+
+### Session 5 — 2026-09-07 (evening)
+
+**Objective:** Load MD 290 into Indigo via Django ORM (Option 2). Result: SUCCESS.
+
+Achievements:
+- Wrote scripts/load_via_orm.py — a Django-shell-independent script that runs
+  inside the container and creates Work + Document via the ORM directly.
+- Copied it into the container via `docker compose cp` (docker-compose.yml has
+  no bind mount for /app; needs fixing before Session 6).
+- Inspected Indigo's Work and Document models via Django shell — confirmed
+  document_xml (not "content") holds the AKN XML.
+- Loaded MD 290 successfully — Work id=1, Document id=1.
+- MD 290 appears in India's Works list at /places/in/works with correct
+  title, principal flag, FRBR URI (/akn/in/act/masterDirection/2025-11-28/290),
+  publication metadata, and timeline entry.
+- Verified server-side AKN parsing via /api/documents/1/toc endpoint —
+  returns clean nested structure with all chapters, sections, paragraphs
+  and sub-paragraphs correctly recognised. Every eId present.
+
+Blocker discovered but deferred:
+- Indigo's browser editor throws JavaScript error
+  `SyntaxError: Can't create duplicate variable: 'AknTextEditor'`
+  which prevents client-side rendering. Server-side parsing is fine.
+  This is an Indigo frontend bug — irrelevant to our POC since we're
+  building our own React frontend.
+
+Cosmetic issue:
+- Our XML has <num>Chapter I</num>; Indigo prepends "Chapter" → renders
+  as "Chapter Chapter I". Fix by regenerating with <num>I</num> only.
+
+### Phase status
+- [x] Phase 0 — Indigo running with India as a Place
+- [x] Phase 2 — PDF → AKN pipeline works end-to-end. MD 290 loaded and
+  parsed successfully. One document down, ~249 to go.
+- [ ] Phase 1, 3, 4, 5
+
+### Session 6 targets
+Two options, pick based on time and appetite:
+- Option A: Ingest 2-3 more MDs (172 Climate Finance with tables,
+  340 NBFC Acquisition with nested sub-clauses). Validates the pipeline
+  handles structural variety. ~1 hour.
+- Option B: Start Phase 3 — a minimal React frontend that reads
+  document.document_xml from the API and renders it as HTML.
+  Because Indigo's own renderer is broken and we're building our own
+  anyway, this is where we start meaningfully diverging from Indigo.
+  ~2-3 hours.
+
+Recommended: Option A first (fast confidence boost + edge case discovery),
+then Option B in a follow-up. But if there's appetite, straight to B is fine.
+
+Housekeeping for next session:
+- Add bind mount for /app in docker-compose.yml (Option B from Session 4)
+  so we don't need `docker compose cp` for every script change.
+- Regenerate MD 290 with fixed <num> tags to remove "Chapter Chapter" artifact.
