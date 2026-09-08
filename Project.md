@@ -232,29 +232,132 @@ Setup work:
 Estimated: 2-3 sessions to have a working "browse MDs and see their
 content" frontend. Then editor work (~4-6 sessions).
 
+### Session 8 — 2026-09-08 (afternoon/evening)
+
+**Objective:** Start Phase 3 — React frontend. Get MDs displayed in a
+custom UI, replacing Indigo's broken browser interface.
+
+Verified environment: Node v22.23.2, npm v10.9.8 already installed. No
+setup work needed.
+
+Scaffolding:
+- Created frontend/ folder with `npm create vite@latest frontend --
+  --template react-ts`. React + TypeScript + Vite via official template.
+- Ran `npm install` cleanly. Vite dev server on port 5173 alongside
+  Django on port 8000.
+- Chose TypeScript over JavaScript for better type-checked debugging
+  and IDE support. Chose to start with minimal deps and add libraries
+  only as needed (no upfront frameworks/state managers).
+
+CORS check:
+- Verified django-cors-headers already installed and CorsMiddleware active
+  in Indigo. CORS_ALLOWED_ORIGINS not set but requests from :5173 work —
+  Indigo defaults to permissive dev-mode CORS. Note as production hardening
+  concern for later.
+
+Works list page:
+- Wrote App.tsx that fetches /api/works from Django, displays 3 MDs as
+  cards with title, MD number, publication date, FRBR URI, principal badge.
+- Full styling with hover states, badges, monospaced FRBR URIs, clean
+  card layout.
+- Data flowed end-to-end on first attempt: PDF → Gemini → Django ORM →
+  Postgres → REST API → React → browser. Seven layers, all working.
+
+Navigation (React Router v7):
+- Installed react-router (note: modern package name, not react-router-dom).
+- Created frontend/src/pages/{WorksList,DocumentViewer}.tsx and
+  frontend/src/components/AknRenderer.tsx.
+- Refactored App.tsx to be a router: `/` → WorksList, `/works/:id` →
+  DocumentViewer.
+- Cards on Works list now link to document viewer pages.
+
+AKN → HTML renderer:
+- Wrote AknRenderer component: parses AKN XML using DOMParser, recursively
+  renders elements to HTML.
+- Handles: preface, chapter, section, paragraph, subparagraph, intro,
+  content, p, table, tr, th, td.
+- Unknown elements fall through to generic renderer.
+- Uses AKN 3.0 namespace URI for element lookup — proper XML namespace
+  handling, not string matching.
+- Comprehensive CSS: Apple-inspired serif-free typography, grid-aligned
+  paragraph numbers, indented subparagraphs, styled tables with subtle
+  borders, italic preface block with left accent bar.
+
+Verified end-to-end:
+- MD 290 (simple, 13 paragraphs): renders correctly with all chapters,
+  sections, and paragraph structure.
+- MD 172 (14 pages, tables): renders correctly including the Impact
+  Indicators table with all 5 rows and correct category-indicator
+  associations. The pymupdf → Gemini → AKN → React pipeline preserves
+  table structure end-to-end.
+- MD 356 (25 pages, complex consolidated): renders correctly.
+- Back-navigation works. React Router hot-reloads on edits.
+
+Chose to end session before completing backlog cleanup. Backlog work
+started but incomplete — see "Session 9 pickup" below.
+
+### Session 9 pickup — backlog fixes (in priority order)
+
+**Started but not completed:**
+1. **Chapter number doubling** — decided to fix in TWO places:
+   - Prompt (scripts/prompts/extract_akn_body.md): change instructions to
+     produce `<num>I</num>` not `<num>Chapter I</num>`. Add explicit example.
+   - Renderer (frontend/src/components/AknRenderer.tsx): update chapter case
+     to prepend "Chapter " in the display: `<span>Chapter {num}</span>`.
+     Rationale: XML holds structural semantics, renderer handles human
+     presentation. Cleaner separation.
+   - After both changes: regenerate all 3 MDs, delete old Works, reload.
+
+**Still to do in Session 9:**
+2. **Preface page markers** — strip `===== PAGE N =====` from preface text
+   in scripts/ingest_pdf_to_akn.py extract_preface() function.
+3. **Verify preface text cleanup** — with pymupdf, "S ections" / "al l other"
+   artifacts may already be gone. Quick check on MD 172 preface after
+   regeneration.
+4. **API_TOKEN duplication in frontend** — currently hardcoded in
+   WorksList.tsx and DocumentViewer.tsx. Extract into shared
+   frontend/src/config.ts (or similar). ~15 min, unblocks clean growth
+   of future components.
+
+**Session 9 sequence:**
+- Complete backlog items 1-4 above (~45 min)
+- Regenerate all 3 MDs with fixed prompt
+- Verify chapter rendering, preface cleanup, and API config work
+- Then decide: continue Phase 3 polish OR start Phase 4 (editor prototype)
+
+### Phase status
+- [x] Phase 0 — Indigo running with India as a Place
+- [x] Phase 2 — PDF → AKN pipeline solid, 3 MDs loaded and validated
+- [~] Phase 3 — Frontend scaffolded, Works list + Document viewer working.
+  Backlog cleanup in progress. Additional features (search, filters,
+  coordination dashboard) still to build.
+- [ ] Phase 1, 4, 5
+
 ## Backlog — deferred fixes
 
-- **Preface page markers not stripped:** extract_preface() in
-  ingest_pdf_to_akn.py doesn't strip "===== PAGE N =====" markers
-  when they fall inside preface text (seen in MD 172, MD 356).
-- **Chapter number doubling:** Our XML has <num>Chapter I</num>;
-  Indigo prepends "Chapter" → renders as "Chapter Chapter I". Fix
-  prompt to produce <num>I</num> only. Regenerate all MDs after fix.
-- **Preface text cleanup:** Gemini cleans body text (removes "Urba n"
-  → "Urban") but our Python preface extractor doesn't. Either move
-  preface cleanup into Gemini's scope or add regex cleanup to
-  extract_preface().
-- **Complex tables untested:** Simple tables handled well (MD 172).
-  Complex tables (multi-column financial, merged cells, multi-page)
-  not yet tested. Watch on future ingestions; consider docling/marker
-  as future extractor if pymupdf + Gemini fails on hard cases.
+**Pipeline / ingestion:**
+- **Chapter number doubling:** In progress (Session 9 pickup). Fix by
+  splitting responsibility: prompt produces `<num>I</num>`, renderer
+  displays "Chapter I".
+- **Preface page markers:** extract_preface() in ingest_pdf_to_akn.py
+  doesn't strip `===== PAGE N =====` markers. Fix in Session 9.
+- **Complex tables untested:** Simple 2-column tables handled well
+  (MD 172). Multi-column financial, merged cells, multi-page tables
+  not yet tested. Consider docling/marker fallback if pymupdf + Gemini
+  fails on hard cases.
 - **Amendment history handling:** MD 356 loaded with July 2026
   consolidation date. Proper handling (original Work at 2025 date +
   amended Expression at 2026) is Phase 5 work.
-- **Indigo API write layer:** WorkSerializer/DocumentSerializer not
-  designed for writes. Currently working around via Django ORM. If
-  we need programmatic write access later (from React frontend for
-  amendments), 2-3 sessions of custom serializer work required.
+
+**Frontend:**
+- **API config duplication:** API_TOKEN and API_BASE hardcoded in
+  multiple components. Extract to shared frontend/src/config.ts in
+  Session 9.
+- **Auth is dev-only:** Token hardcoded in frontend source. Fine for
+  local POC. Production requires real auth flow (login page, token
+  refresh, secure storage). Phase 4+ concern.
+- **No error boundaries:** If a React component throws, whole page
+  crashes. Add
 
 ## Open questions
 - Session cadence — daily / weekly / weekend?
