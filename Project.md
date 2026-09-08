@@ -191,3 +191,24 @@ Housekeeping for next session:
 - Add bind mount for /app in docker-compose.yml (Option B from Session 4)
   so we don't need `docker compose cp` for every script change.
 - Regenerate MD 290 with fixed <num> tags to remove "Chapter Chapter" artifact.
+
+## Backlog — deferred fixes
+
+- **Table extraction quality:** pypdf extracts tables as sequential
+  text. Gemini reconstructs simple tables well (verified on MD 172
+  Impact Indicators table). Complex tables (financial matrices,
+  merged cells, multi-page) untested. Consider migrating to
+  docling / marker / pdfplumber before scaling to full 250-MD corpus.
+- **Preface page markers:** Our regex preface extractor doesn't
+  strip "===== PAGE N =====" markers when they fall inside the
+  preface text (seen in MD 172). Fix extract_preface() in
+  ingest_pdf_to_akn.py.
+- **Chapter number doubling:** Our XML has <num>Chapter I</num>;
+  Indigo prepends "Chapter" -> "Chapter Chapter I". Fix prompt to
+  produce <num>I</num> only. Applies to all ingested MDs — need to
+  regenerate MD 290 and MD 172 after prompt fix.
+- **Preface text cleanup:** Gemini cleans body text (removes "Urba n"
+  -> "Urban") but our Python preface extractor doesn't. Move preface
+  cleanup into Gemini's scope OR add regex cleanup to extract_preface().
+- **Docker version warning:** docker-compose.yml has `version: "3"`
+  which is deprecated. Remove the line to silence WARN[0000] messages.

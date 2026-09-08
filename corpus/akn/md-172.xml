@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<akomaNtoso xmlns="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
+  <act name="masterDirection" contains="originalVersion">
+    <meta>
+      <identification source="#rbi">
+        <FRBRWork>
+          <FRBRthis value="/akn/in/act/masterDirection/2025-11-28/172/!main"/>
+          <FRBRuri value="/akn/in/act/masterDirection/2025-11-28/172"/>
+          <FRBRalias value="Reserve Bank of India (Commercial Banks - Climate Finance and Management of Climate Change Risks) Directions, 2025" name="title"/>
+          <FRBRdate date="2025-11-28" name="Generation"/>
+          <FRBRauthor href="#rbi"/>
+          <FRBRcountry value="in"/>
+          <FRBRnumber value="172"/>
+        </FRBRWork>
+        <FRBRExpression>
+          <FRBRthis value="/akn/in/act/masterDirection/2025-11-28/172/eng@2025-11-28/!main"/>
+          <FRBRuri value="/akn/in/act/masterDirection/2025-11-28/172/eng@2025-11-28"/>
+          <FRBRdate date="2025-11-28" name="Generation"/>
+          <FRBRauthor href="#rbi"/>
+          <FRBRlanguage language="eng"/>
+        </FRBRExpression>
+        <FRBRManifestation>
+          <FRBRthis value="/akn/in/act/masterDirection/2025-11-28/172/eng@2025-11-28/!main.xml"/>
+          <FRBRuri value="/akn/in/act/masterDirection/2025-11-28/172/eng@2025-11-28.xml"/>
+          <FRBRdate date="2025-11-28" name="Generation"/>
+          <FRBRauthor href="#rbi"/>
+        </FRBRManifestation>
+      </identification>
+      <references source="#rbi">
+        <TLCOrganization eId="rbi" href="/ontology/organization/in/rbi" showAs="Reserve Bank of India"/>
+      </references>
+    </meta>
+    <preface>
+      <p>In exercise of the powers conferred by Sections 21 and 35A of the Banking Regulation Act, 1949, and all other provisions / laws enabling the Reserve Bank of India (‘RBI’) in this regard, the RBI being satisfied that it is necessary and expedient in the public interest so to do, hereby issues the Directions hereinafter specified. ===== PAGE 3 ===== 3</p>
+    </preface>
+    <body>
+  <chapter eId="chp_I">
+    <num>Chapter I</num>
+    <heading>Preliminary</heading>
+    <section eId="chp_I__sec_A">
+      <num>A.</num>
+      <heading>Short Title and Commencement</heading>
+      <paragraph eId="chp_I__sec_A__para_1">
+        <num>1.</num>
+        <content>
+          <p>These Directions shall be called the Reserve Bank of India (Commercial Banks - Climate Finance and Management of Climate Change Risks) Directions, 2025.</p>
+        </content>
+      </paragraph>
+      <paragraph eId="chp_I__sec_A__para_2">
+        <num>2.</num>
+        <content>
+          <p>These Directions shall come into force with immediate effect.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_I__sec_B">
+      <num>B.</num>
+      <heading>Applicability</heading>
+      <paragraph eId="chp_I__sec_B__para_3">
+        <num>3.</num>
+        <content>
+          <p>These Directions shall be applicable to Commercial Banks (hereinafter collectively referred to as 'banks' and individually as a 'bank'). For the purpose of these Directions, ‘Commercial Banks’ mean banking companies (other than Small Finance Banks, Payment Banks, and Local Area Banks), corresponding new banks, and the State Bank of India, as defined respectively under clauses (c), (da), and (nc) of Section 5 of the Banking Regulation Act, 1949.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_I__sec_C">
+      <num>C.</num>
+      <heading>Definitions</heading>
+      <paragraph eId="chp_I__sec_C__para_4">
+        <num>4.</num>
+        <intro>
+          <p>In these Directions, unless the context states otherwise, the terms herein shall bear the meanings assigned to them below:</p>
+        </intro>
+        <subparagraph eId="chp_I__sec_C__para_4__n1">
+          <num>(1)</num>
+          <content>
+            <p>‘green activities / projects’ means activities / projects meeting the requirements prescribed in paragraph 14 of these Directions;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_I__sec_C__para_4__n2">
+          <num>(2)</num>
+          <content>
+            <p>‘green deposit’ means an interest-bearing deposit, received by a bank for a fixed period and the proceeds of which are earmarked for allocation towards green finance;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_I__sec_C__para_4__n3">
+          <num>(3)</num>
+          <content>
+            <p>‘green finance’ means lending to and / or investing in green activities / projects meeting the requirements prescribed in paragraph 14 of these Directions. Such lending contributes to climate risk mitigation, climate adaptation and resilience, and other climate-related or environmental objectives - including biodiversity management and nature-based solution;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_I__sec_C__para_4__n4">
+          <num>(4)</num>
+          <content>
+            <p>‘greenwashing’ means the practice of marketing products / services as green, when in fact they do not meet requirements to be defined as green activities / projects.</p>
+          </content>
+        </subparagraph>
+      </paragraph>
+      <paragraph eId="chp_I__sec_C__para_5">
+        <num>5.</num>
+        <content>
+          <p>All other expressions unless defined herein shall have the same meaning as have been assigned to them under the Reserve Bank of India Act, 1934 or the Banking Regulation Act, 1949 or any statutory modification or re-enactment thereto, or Glossary of terms published by the RBI or as used in commercial parlance, as the case may be.</p>
+        </content>
+      </paragraph>
+    </section>
+  </chapter>
+  <chapter eId="chp_II">
+    <num>Chapter II</num>
+    <heading>Role of the Board</heading>
+    <paragraph eId="chp_II__para_6">
+      <num>6.</num>
+      <content>
+        <p>A bank desirous of raising green deposits shall put in place comprehensive Board-approved policies on Green Deposits and Financing Framework, the coverage of which are indicated in paragraph 8 and paragraph 11 respectively of these Directions.</p>
+      </content>
+    </paragraph>
+    <paragraph eId="chp_II__para_7">
+      <num>7.</num>
+      <content>
+        <p>The Board shall be responsible for reviewing the bank’s green deposit initiatives through a review report to be placed in accordance with the provisions specified in paragraph 19 of these Directions.</p>
+      </content>
+    </paragraph>
+  </chapter>
+  <chapter eId="chp_III">
+    <num>Chapter III</num>
+    <heading>Framework for Acceptance of Green Deposits</heading>
+    <section eId="chp_III__sec_A">
+      <num>A.</num>
+      <heading>Policy</heading>
+      <paragraph eId="chp_III__sec_A__para_8">
+        <num>8.</num>
+        <content>
+          <p>The Board-approved policy on green deposits of a bank shall lay down all aspects, in detail, for the issuance and allocation of green deposits. A copy of the policy on ‘Green Deposits’ shall be made available on the website of the bank. A foreign bank having a common global policy on green deposits may use the same for issuance of green deposits in India. In such cases, the foreign bank shall make available the green deposit policy on its website. A bank can finance any green activities / projects irrespective of raising green deposits for the same. However, a bank cannot finance green activities / projects first and raise green deposits thereafter for the same.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_B">
+      <num>B.</num>
+      <heading>Denomination, interest rates and tenor of deposits</heading>
+      <paragraph eId="chp_III__sec_B__para_9">
+        <num>9.</num>
+        <intro>
+          <p>A bank shall issue green deposits as cumulative / non-cumulative deposits. On maturity, the green deposits shall be renewed or withdrawn at the option of the depositor. The green deposits shall only be denominated in Indian Rupees and not in any foreign currency. The tenor, size, interest rate, and other terms and conditions as defined in the Reserve Bank of India (Commercial Banks - Interest Rate on Deposits) Directions, 2025, as amended from time to time, shall also be applicable to green deposits mutatis mutandis.</p>
+          <p>Explanation:</p>
+        </intro>
+        <subparagraph eId="chp_III__sec_B__para_9__n1">
+          <num>(1)</num>
+          <content>
+            <p>It is not mandatory for a bank to raise green deposits, but in case it intends to raise green deposits from their customers they should follow the framework prescribed herein.</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_B__para_9__n2">
+          <num>(2)</num>
+          <content>
+            <p>The extant guidelines enumerated above do not permit a bank to offer differential rate of interest on green deposits.</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_B__para_9__n3">
+          <num>(3)</num>
+          <content>
+            <p>A bank shall pay interest on green deposits to its customers as per agreed terms and conditions and aforesaid directions irrespective of allocation / utilisation of proceeds.</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_B__para_9__n4">
+          <num>(4)</num>
+          <content>
+            <p>With respect to premature withdrawal of green deposits, while there is no restriction, a bank shall adhere to the aforesaid directions. Further, premature withdrawal shall not have any bearing on the activities / projects undertaken using the proceeds of green deposits.</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_B__para_9__n5">
+          <num>(5)</num>
+          <content>
+            <p>The deposits raised under the framework are covered by Deposit Insurance and Credit Guarantee Corporation (DICGC) in accordance with the Deposit Insurance and Credit Guarantee Corporation Act, 1961 and the regulations framed thereunder, as amended from time to time.</p>
+          </content>
+        </subparagraph>
+      </paragraph>
+      <paragraph eId="chp_III__sec_B__para_10">
+        <num>10.</num>
+        <content>
+          <p>A bank is allowed to offer overdraft facility to customers against Green Deposits subject to the instructions contained in the Reserve Bank of India (Commercial Banks – Credit Risk Management) Directions, 2025.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_C">
+      <num>C.</num>
+      <heading>Financing Framework</heading>
+      <paragraph eId="chp_III__sec_C__para_11">
+        <num>11.</num>
+        <intro>
+          <p>The Board-approved Financing Framework (FF) put in place by a bank shall cover, inter-alia, the following for effective allocation of green deposits:</p>
+        </intro>
+        <subparagraph eId="chp_III__sec_C__para_11__n1">
+          <num>(1)</num>
+          <intro>
+            <p>the eligible green activities / projects that could be financed out of proceeds raised through the green deposits (as permitted in paragraph 14 of these Directions);</p>
+            <p>Explanation:</p>
+          </intro>
+          <subparagraph eId="chp_III__sec_C__para_11__n1__i">
+            <num>(i)</num>
+            <content>
+              <p>The green activities / projects financed under the framework can be classified under priority sector if they meet the requirements laid down in Priority Sector Lending (PSL) guidelines of RBI [Master Directions - Reserve Bank of India (Priority Sector Lending – Targets and Classification) Directions, 2025 dated March 24, 2025], as amended from time to time.</p>
+            </content>
+          </subparagraph>
+          <subparagraph eId="chp_III__sec_C__para_11__n1__ii">
+            <num>(ii)</num>
+            <content>
+              <p>Investment by a bank in Sovereign Green Bonds (SGrBs) are covered under the framework.</p>
+            </content>
+          </subparagraph>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_C__para_11__n2">
+          <num>(2)</num>
+          <content>
+            <p>the process for project evaluation and selection by the bank including identifying the projects fit for lending / investing within the eligible categories, monitoring and validating all the related / required information provided by the borrower;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_C__para_11__n3">
+          <num>(3)</num>
+          <content>
+            <p>the allocation of proceeds of green deposits and its reporting and disclosures, Third-Party Verification / Assurance, and Impact Assessment; and</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_C__para_11__n4">
+          <num>(4)</num>
+          <intro>
+            <p>the particulars of the temporary allocation (which would only be in Level 1 High Quality Liquid Assets as defined in Reserve Bank of India (Commercial Banks - Asset Liability Management) Directions, 2025, up to a maximum original tenure of one year) of green deposit proceeds, pending their allocation to the eligible activities / projects.</p>
+            <p>Explanation:</p>
+          </intro>
+          <subparagraph eId="chp_III__sec_C__para_11__n4__i">
+            <num>(i)</num>
+            <content>
+              <p>The bank can temporarily park proceeds of green deposits, pending allocation towards eligible green activities / projects, in liquid instruments with maximum maturity of one year.</p>
+            </content>
+          </subparagraph>
+          <subparagraph eId="chp_III__sec_C__para_11__n4__ii">
+            <num>(ii)</num>
+            <content>
+              <p>While the framework does not envisage any penalty for non-allocation of proceeds towards eligible green activities / projects, it shall be subject to supervisory review.</p>
+            </content>
+          </subparagraph>
+        </subparagraph>
+      </paragraph>
+      <paragraph eId="chp_III__sec_C__para_12">
+        <num>12.</num>
+        <content>
+          <p>External Review – A bank shall arrange to carry out an external review of their FF.</p>
+        </content>
+      </paragraph>
+      <paragraph eId="chp_III__sec_C__para_13">
+        <num>13.</num>
+        <content>
+          <p>Before the implementation of FF, a copy of the FF shall be made available on the website of the bank along with the opinion of external reviewer.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_D">
+      <num>D.</num>
+      <heading>Use of Proceeds</heading>
+      <paragraph eId="chp_III__sec_D__para_14">
+        <num>14.</num>
+        <content>
+          <p>The allocation of proceeds raised from green deposits shall be based on the official Indian green taxonomy. Pending finalization of the taxonomy, as an interim measure, a bank shall allocate the proceeds raised through green deposits towards the green activities / projects which encourage energy efficiency in resource utilisation, reduce carbon emissions, emission of greenhouse gases, promote climate resilience, climate adaptation, as well as value and improve natural ecosystems and biodiversity. The eligible green activities / projects are described below:</p>
+          <table>
+            <tr>
+              <th>Categories</th>
+              <th>Description</th>
+            </tr>
+            <tr>
+              <td>Renewable Energy</td>
+              <td>
+                <p>• Solar / wind / biomass / hydropower energy projects that integrate energy generation and storage.</p>
+                <p>• Incentivizing adoption of renewable energy.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Energy Efficiency</td>
+              <td>
+                <p>• Design and construction of energy-efficient and energy-saving systems and installations in buildings and properties.</p>
+                <p>• Supporting lighting improvements (e.g., replacement with LEDs).</p>
+                <p>• Supporting construction of new low-carbon buildings as well as energy-efficiency retrofits to existing buildings.</p>
+                <p>• Projects to reduce electricity grid losses.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Clean Transportation</td>
+              <td>
+                <p>• Projects promoting electrification of transportation.</p>
+                <p>• Adoption of clean fuels like electric vehicles including building charging infrastructure.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Climate Change Adaptation</td>
+              <td>
+                <p>• Projects aimed at making infrastructure more resilient to impacts of climate change.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Sustainable Water and Waste Management</td>
+              <td>
+                <p>• Promoting water efficient irrigation systems.</p>
+                <p>• Installation / upgradation of wastewater infrastructure including transport, treatment, and disposal systems.</p>
+                <p>• Water resources conservation.</p>
+                <p>• Flood defence systems.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Pollution Prevention and Control</td>
+              <td>
+                <p>• Projects targeting reduction of air emissions, greenhouse gas control, soil remediation, waste management, waste prevention, waste recycling, waste reduction and energy / emission-efficient waste-to-energy.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Green Buildings</td>
+              <td>
+                <p>• Projects related to buildings that meet regional, national, or internationally recognized standards or certifications for environmental performance.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Sustainable Management of Living Natural Resources and Land Use</td>
+              <td>
+                <p>• Environmentally sustainable management of agriculture, animal husbandry, fishery, and aquaculture.</p>
+                <p>• Sustainable forestry management including afforestation / reforestation.</p>
+                <p>• Support to certified organic farming.</p>
+                <p>• Research on living resources and biodiversity protection.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Terrestrial and Aquatic Biodiversity Conservation</td>
+              <td>
+                <p>• Projects relating to coastal and marine environments.</p>
+                <p>• Projects related to biodiversity preservation, including conservation of endangered species, habitats, and ecosystems.</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Exclusions</td>
+              <td>
+                <p>• Projects involving new or existing extraction, production, and distribution of fossil fuels, including improvements and upgrades; or where the core energy source is fossil-fuel based.</p>
+                <p>• Nuclear power generation.</p>
+                <p>• Direct waste incineration.</p>
+                <p>• Alcohol, weapons, tobacco, gaming, or palm oil industries.</p>
+                <p>• Renewable energy projects generating energy from biomass using feedstock originating from protected areas. For the purpose of these Directions, feedstock primarily includes sewage, manure, wastewater, bagasse, biomass, wood pellets, etc.</p>
+                <p>• Landfill projects.</p>
+                <p>• Hydropower plants larger than 25 MW.</p>
+              </td>
+            </tr>
+          </table>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_E">
+      <num>E.</num>
+      <heading>Third-Party Verification / Assurance</heading>
+      <paragraph eId="chp_III__sec_E__para_15">
+        <num>15.</num>
+        <content>
+          <p>The allocation of funds raised through green deposits by a bank during a financial year shall be subject to an annual independent third-party verification / assurance. The third-party verification / assurance would not absolve the bank of its responsibility regarding the end-use of funds, for which it shall follow the laid down procedures of internal checks and balances as in the case of other loans. The terms and conditions to be additionally fulfilled by the borrowers to meet the requirements of the framework, as laid out in paragraph 11 to paragraph 14 of these Directions, are the additional check points which have to be adhered to by the bank for ensuring the end-use of funds.</p>
+          <p>Explanation: A bank can engage with any appropriate and reputed domestic / international agency for external review of the FF, third-party verification / assurance, and impact assessment of the green activities / projects.</p>
+        </content>
+      </paragraph>
+      <paragraph eId="chp_III__sec_E__para_16">
+        <num>16.</num>
+        <intro>
+          <p>The third-party verification / assurance report shall, at the minimum, cover the following aspects:</p>
+        </intro>
+        <subparagraph eId="chp_III__sec_E__para_16__n1">
+          <num>(1)</num>
+          <content>
+            <p>Use of the proceeds by the bank should be in accordance with the eligible green activities / projects. It shall monitor the end-use of funds allocated against the deposits raised.</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_E__para_16__n2">
+          <num>(2)</num>
+          <content>
+            <p>Policies and internal controls including, inter-alia, project evaluation and selection, management of proceeds, validation of all the related / required information provided by the borrower to the bank, and reporting and disclosures.</p>
+          </content>
+        </subparagraph>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_F">
+      <num>F.</num>
+      <heading>Impact Assessment</heading>
+      <paragraph eId="chp_III__sec_F__para_17">
+        <num>17.</num>
+        <content>
+          <p>A bank shall, with the assistance of external firms, assess annually the impact associated of the funds lent for or invested in green finance activities / projects during a financial year through an Impact Assessment Report.</p>
+          <p>An illustrative list of impact indicators is tabulated below. In case a bank is unable to quantify the impact of their lending / investment, it shall disclose, at the minimum, the reasons, the difficulties encountered, and the time-bound plans to address the same.</p>
+          <table>
+            <tr>
+              <th>Eligible Project Category</th>
+              <th>Impact Indicators - Examples</th>
+            </tr>
+            <tr>
+              <td>Renewable Energy</td>
+              <td>
+                <p>Total renewable capacity (in MWh)</p>
+                <p>Energy generated per year (MWh)</p>
+                <p>GHG emissions avoided per year (measured in tonnes CO2 equivalent, tCO2e)</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Waste Management</td>
+              <td>
+                <p>Waste diverted from landfill per year (tonnes)</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Clean Transportation</td>
+              <td>
+                <p>GHG emissions avoided per year (tCO2e)</p>
+                <p>New clean transportation infrastructure built (km)</p>
+                <p>Number of electric or low emission vehicles produced</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Energy Efficiency</td>
+              <td>
+                <p>Energy savings per year (MWh)</p>
+                <p>GHG emissions avoided per year (tCO2e)</p>
+              </td>
+            </tr>
+            <tr>
+              <td>Afforestation / Reforestation</td>
+              <td>
+                <p>GHG emissions reduced / Carbon Sequestration achieved (measured in tCO2e)</p>
+              </td>
+            </tr>
+          </table>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_III__sec_G">
+      <num>G.</num>
+      <heading>Reporting and Disclosures</heading>
+      <paragraph eId="chp_III__sec_G__para_18">
+        <num>18.</num>
+        <content>
+          <p>A bank shall place the report of the Third-Party Verification / Assurance and the Impact Assessment Report on its website.</p>
+        </content>
+      </paragraph>
+      <paragraph eId="chp_III__sec_G__para_19">
+        <num>19.</num>
+        <intro>
+          <p>A review report shall be placed by a bank before its Board of Directors within three months of the end of the financial year which shall, inter-alia, cover the following details:</p>
+        </intro>
+        <subparagraph eId="chp_III__sec_G__para_19__n1">
+          <num>(1)</num>
+          <content>
+            <p>amount raised under green deposits during the previous financial year;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_G__para_19__n2">
+          <num>(2)</num>
+          <content>
+            <p>list of green activities / projects to which proceeds have been allocated, along with a brief description of the projects;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_G__para_19__n3">
+          <num>(3)</num>
+          <content>
+            <p>the amount allocated to the eligible green activities / projects;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_III__sec_G__para_19__n4">
+          <num>(4)</num>
+          <content>
+            <p>the Third-Party Verification / Assurance Report and Impact Assessment Report.</p>
+          </content>
+        </subparagraph>
+      </paragraph>
+      <paragraph eId="chp_III__sec_G__para_20">
+        <num>20.</num>
+        <content>
+          <p>For requirements related to disclosures in annual financial statements, a bank shall refer to the Reserve Bank of India (Commercial Banks - Financial Statements: Presentation and Disclosures) Directions, 2025.</p>
+        </content>
+      </paragraph>
+    </section>
+  </chapter>
+  <chapter eId="chp_IV">
+    <num>Chapter IV</num>
+    <heading>Repeal and other provisions</heading>
+    <section eId="chp_IV__sec_A">
+      <num>A.</num>
+      <heading>Repeal and saving</heading>
+      <paragraph eId="chp_IV__sec_A__para_21">
+        <num>21.</num>
+        <content>
+          <p>With the issue of these Directions, the existing Directions, instructions, and guidelines relating to framework for acceptance of green deposits as applicable to commercial banks stand repealed, as communicated vide circular DOR.RRC.REC.302/33-01-010/2025-26 dated November 28, 2025. The Directions, instructions, and guidelines repealed prior to the issuance of these Directions shall continue to remain repealed.</p>
+        </content>
+      </paragraph>
+      <paragraph eId="chp_IV__sec_A__para_22">
+        <num>22.</num>
+        <intro>
+          <p>Notwithstanding such repeal, any action taken or purported to have been taken, or initiated under the repealed Directions, instructions, or guidelines shall continue to be governed by the provisions thereof. All approvals or acknowledgments granted under these repealed lists shall be deemed as governed by these Directions. Further, the repeal of these directions, instructions, or guidelines shall not in any way prejudicially affect:</p>
+        </intro>
+        <subparagraph eId="chp_IV__sec_A__para_22__n1">
+          <num>(1)</num>
+          <content>
+            <p>any right, obligation or liability acquired, accrued, or incurred thereunder;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_IV__sec_A__para_22__n2">
+          <num>(2)</num>
+          <content>
+            <p>any, penalty, forfeiture, or punishment incurred in respect of any contravention committed thereunder;</p>
+          </content>
+        </subparagraph>
+        <subparagraph eId="chp_IV__sec_A__para_22__n3">
+          <num>(3)</num>
+          <content>
+            <p>any investigation, legal proceeding, or remedy in respect of any such right, privilege, obligation, liability, penalty, forfeiture, or punishment as aforesaid; and any such investigation, legal proceedings or remedy may be instituted, continued, or enforced and any such penalty, forfeiture or punishment may be imposed as if those directions, instructions, or guidelines had not been repealed.</p>
+          </content>
+        </subparagraph>
+      </paragraph>
+    </section>
+    <section eId="chp_IV__sec_B">
+      <num>B.</num>
+      <heading>Application of other laws not barred</heading>
+      <paragraph eId="chp_IV__sec_B__para_23">
+        <num>23.</num>
+        <content>
+          <p>The provisions of these Directions shall be in addition to, and not in derogation of the provisions of any other laws, rules, regulations, or directions, for the time being in force.</p>
+        </content>
+      </paragraph>
+    </section>
+    <section eId="chp_IV__sec_C">
+      <num>C.</num>
+      <heading>Interpretations</heading>
+      <paragraph eId="chp_IV__sec_C__para_24">
+        <num>24.</num>
+        <content>
+          <p>For the purpose of giving effect to the provisions of these Directions or in order to remove any difficulties in the application or interpretation of the provisions of these Directions, the RBI may, if it considers necessary, issue necessary clarifications in respect of any matter covered herein and the interpretation of any provision of these Directions given by the RBI shall be final and binding.</p>
+        </content>
+      </paragraph>
+    </section>
+  </chapter>
+</body>
+  </act>
+</akomaNtoso>
