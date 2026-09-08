@@ -192,6 +192,87 @@ Housekeeping for next session:
   so we don't need `docker compose cp` for every script change.
 - Regenerate MD 290 with fixed <num> tags to remove "Chapter Chapter" artifact.
 
+### Session 7 — 2026-09-08
+
+**Objective:** Ingest MDs 172 and 356, validate pipeline across structural variety,
+lock in housekeeping deferred from Session 6.
+
+Housekeeping wins:
+- Added bind mount `./:/app` to docker-compose.yml — scripts and code changes
+  on Mac side are now live-visible inside container without rebuild.
+- Removed obsolete `version: "3"` line from docker-compose.yml to silence
+  startup warning.
+- Renamed extract_pdf.py → extract_pdf_pypdf.py (kept as fallback), promoted
+  pymupdf-based version to be the new extract_pdf.py.
+
+MD 172 (14 pages, tables):
+- Initial ingestion via pypdf succeeded. Pipeline produced 27,927 chars of AKN.
+- Impact Indicators table (5 rows, 2 columns) correctly reconstructed by Gemini
+  as valid AKN <table> markup, despite pypdf mangling the extraction into
+  sequential text. Domain context enabled semantic reconstruction.
+- Tokens: 5,935 in / 6,876 out. Cost: $0.
+
+Extractor comparison (pypdf vs pymupdf on MD 172):
+- Ran side-by-side test using same PDF, same prompt, same model.
+- Character count essentially identical (20,400 vs 20,378).
+- Token cost essentially identical.
+- Quality wins for pymupdf:
+  - "S ections 21" → "Sections 21" (no word-break artifacts)
+  - "al l other" → "all other"
+  - Better table header structure (proper <th colspan="2"> where appropriate)
+- Verdict: adopt pymupdf. Matches user's production RAG experience with RBI PDFs.
+
+MD 290 regenerated:
+- Same ingestion pipeline with pymupdf extractor.
+- Tokens: 3,114 in / 2,621 out (essentially unchanged from pypdf baseline).
+- Deleted old Work id=1 via Django ORM cascade, reloaded as Work id=3.
+
+MD 172 regenerated with pymupdf and reloaded as Work id=4.
+
+MD 356 (25 pages, complex consolidated document):
+- Extraction: 42,569 chars via pymupdf.
+- Ingestion: 12,150 in / 16,350 out tokens. Total 28.5k. Still $0.
+- Loaded as Work id=5. TOC returns 1,705 lines of properly nested structure.
+- No structural or content issues encountered.
+
+Backlog (deferred):
+- Preface regex doesn't strip "===== PAGE N =====" markers when they fall
+  inside preface text (MD 172, MD 356). Fix extract_preface() in
+  ingest_pdf_to_akn.py.
+- Chapter number doubling: our XML has <num>Chapter I</num>; Indigo prepends
+  "Chapter" → renders as "Chapter Chapter I". Fix prompt to produce
+  <num>I</num> only. Applies to all ingested MDs — regenerate after fix.
+- MD 356 was loaded with the July 2026 consolidation date. Proper amendment-
+  history handling (original Work at 2025 date + amended Expression at 2026)
+  is a Phase 5 concern.
+- Complex tables (multi-column financial, merged cells, nested) still untested.
+  Current pipeline may or may not handle them. Watch on future ingestions.
+
+**Extrapolation for full 250-MD corpus:**
+- ~3M input tokens, ~4M output tokens estimated
+- Free tier limit is 250 requests/day, so full corpus takes ~5 days
+- Cost: $0 on free tier, ~$10-15 on paid tier
+- Ingestion is a solved problem at this point.
+
+### Phase status
+- [x] Phase 0 — Indigo running with India as a Place
+- [x] Phase 2 — PDF → AKN pipeline solid. 3 MDs loaded and validated:
+  MD 290 (simple), MD 172 (tables), MD 356 (complex consolidated).
+  Ingestion at scale is de-risked.
+- [ ] Phase 1, 3, 4, 5
+
+### Session 8 target
+Start Phase 3 — React frontend scaffolding.
+
+Setup work:
+- Create frontend/ folder in repo with Vite + React
+- Set up basic project structure (components/, pages/, api/)
+- First deliverable: Works list page that fetches /api/works and renders
+- First actual rendering of MD 290 as HTML from AKN XML
+
+Estimated: 2-3 sessions to have a working "browse MDs and see their content"
+frontend. Then editor work (Chapter 3, ~4-6 sessions).
+
 ## Backlog — deferred fixes
 
 - **Table extraction quality:** pypdf extracts tables as sequential
