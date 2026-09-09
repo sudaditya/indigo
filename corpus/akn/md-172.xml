@@ -31,11 +31,11 @@
       </references>
     </meta>
     <preface>
-      <p>In exercise of the powers conferred by Sections 21 and 35A of the Banking Regulation Act, 1949, and all other provisions / laws enabling the Reserve Bank of India (‘RBI’) in this regard, the RBI being satisfied that it is necessary and expedient in the public interest so to do, hereby issues the Directions hereinafter specified. ===== PAGE 3 ===== 3</p>
+      <p>In exercise of the powers conferred by Sections 21 and 35A of the Banking Regulation Act, 1949, and all other provisions / laws enabling the Reserve Bank of India (‘RBI’) in this regard, the RBI being satisfied that it is necessary and expedient in the public interest so to do, hereby issues the Directions hereinafter specified.</p>
     </preface>
     <body>
   <chapter eId="chp_I">
-    <num>Chapter I</num>
+    <num>I</num>
     <heading>Preliminary</heading>
     <section eId="chp_I__sec_A">
       <num>A.</num>
@@ -105,7 +105,7 @@
     </section>
   </chapter>
   <chapter eId="chp_II">
-    <num>Chapter II</num>
+    <num>II</num>
     <heading>Role of the Board</heading>
     <paragraph eId="chp_II__para_6">
       <num>6.</num>
@@ -121,7 +121,7 @@
     </paragraph>
   </chapter>
   <chapter eId="chp_III">
-    <num>Chapter III</num>
+    <num>III</num>
     <heading>Framework for Acceptance of Green Deposits</heading>
     <section eId="chp_III__sec_A">
       <num>A.</num>
@@ -331,8 +331,10 @@
               </td>
             </tr>
             <tr>
-              <td>Exclusions</td>
-              <td>
+              <th colspan="2">Exclusions</th>
+            </tr>
+            <tr>
+              <td colspan="2">
                 <p>• Projects involving new or existing extraction, production, and distribution of fossil fuels, including improvements and upgrades; or where the core energy source is fossil-fuel based.</p>
                 <p>• Nuclear power generation.</p>
                 <p>• Direct waste incineration.</p>
@@ -398,9 +400,7 @@
             </tr>
             <tr>
               <td>Waste Management</td>
-              <td>
-                <p>Waste diverted from landfill per year (tonnes)</p>
-              </td>
+              <td>Waste diverted from landfill per year (tonnes)</td>
             </tr>
             <tr>
               <td>Clean Transportation</td>
@@ -419,9 +419,7 @@
             </tr>
             <tr>
               <td>Afforestation / Reforestation</td>
-              <td>
-                <p>GHG emissions reduced / Carbon Sequestration achieved (measured in tCO2e)</p>
-              </td>
+              <td>GHG emissions reduced / Carbon Sequestration achieved (measured in tCO2e)</td>
             </tr>
           </table>
         </content>
@@ -475,7 +473,7 @@
     </section>
   </chapter>
   <chapter eId="chp_IV">
-    <num>Chapter IV</num>
+    <num>IV</num>
     <heading>Repeal and other provisions</heading>
     <section eId="chp_IV__sec_A">
       <num>A.</num>

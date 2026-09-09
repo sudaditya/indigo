@@ -69,8 +69,13 @@ function renderElement(el: Element, key: string): React.ReactNode {
       return (
         <section key={key} className="akn-chapter">
           <h2 className="akn-chapter-header">
-            {num && <span className="akn-num">{num}</span>}
-            {heading && <span className="akn-heading">{heading}</span>}
+            {num && <span className="akn-num"> Chapter {num}</span>}
+            {heading && (
+              <>
+                <span className="akn-heading-separator"> - </span>
+                <span className="akn-heading">{heading}</span>
+              </>
+              )}
           </h2>
           {children}
         </section>

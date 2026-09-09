@@ -35,7 +35,7 @@
     </preface>
     <body>
   <chapter eId="chp_I">
-    <num>Chapter I</num>
+    <num>I</num>
     <heading>Preliminary</heading>
     <section eId="chp_I__sec_A">
       <num>A.</num>
@@ -100,7 +100,7 @@
     </section>
   </chapter>
   <chapter eId="chp_II">
-    <num>Chapter II</num>
+    <num>II</num>
     <heading>Declaration of dividend by a UCB</heading>
     <paragraph eId="chp_II__para_6">
       <num>6.</num>
@@ -158,7 +158,7 @@
     </paragraph>
   </chapter>
   <chapter eId="chp_III">
-    <num>Chapter III</num>
+    <num>III</num>
     <heading>Repeal and other provisions</heading>
     <section eId="chp_III__sec_A">
       <num>A.</num>

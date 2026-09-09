@@ -13,8 +13,8 @@ Given the plain-text extraction of an RBI Master Direction, produce ONLY the `<b
 RBI Master Directions use this structure:
 
 - `<body>` (root of your output)
-  - `<chapter>` — Roman-numeral labelled ("Chapter I", "Chapter II", etc.)
-    - `<section>` — Letter-labelled ("A.", "B.", "C.") when a chapter has sections. NOT every chapter has sections; sometimes paragraphs go directly under the chapter.
+  - `<chapter>` — Roman-numeral labelled. Store ONLY the Roman numeral in `<num>`, without the word "Chapter". So for "Chapter I", produce `<num>I</num>`, not `<num>Chapter I</num>`. The word "Chapter" is implicit from the element type and will be added by the renderer at display time.
+    - `<section>` — Letter-labelled. Store the letter with its period in `<num>`, e.g. `<num>A.</num>` for "A. Short title". Section labels ARE included with the period as they appear in the source. NOT every chapter has sections; sometimes paragraphs go directly under the chapter.
       - `<paragraph>` — Arabic-numeral labelled ("1.", "2.", "3."). Numbering is CONTINUOUS across the whole document — paragraph 6 might be in Chapter II even though paragraphs 1-5 were in Chapter I.
         - `<subparagraph>` — Roman-numeral in parentheses ("(i)", "(ii)") or Arabic-numeral in parentheses ("(1)", "(2)"). Preserve whichever style is used.
 
@@ -34,8 +34,25 @@ Every structural element MUST have an `eId` attribute. Format:
 
 Every leaf element (paragraph or subparagraph with actual text) wraps its text in `<content><p>...</p></content>`.
 
-Example:
+Complete example showing chapter + section + paragraph hierarchy:
 ```xml
+<chapter eId="chp_I">
+  <num>I</num>
+  <heading>Preliminary</heading>
+  <section eId="chp_I__sec_A">
+    <num>A.</num>
+    <heading>Short title and commencement</heading>
+    <paragraph eId="chp_I__sec_A__para_1">
+      <num>1.</num>
+      <content>
+        <p>These Directions shall be called...</p>
+      </content>
+    </paragraph>
+  </section>
+</chapter>
+```
+
+Example of a paragraph with intro and sub-clauses:
 <paragraph eId="chp_II__para_6">
   <num>6.</num>
   <intro>

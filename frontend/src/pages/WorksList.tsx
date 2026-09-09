@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { apiFetch } from '../api/client';
 
 interface Work {
   id: number;
@@ -20,9 +21,6 @@ interface WorksResponse {
   results: Work[];
 }
 
-const API_BASE = 'http://localhost:8000/api';
-const API_TOKEN = 'c6f1cada6b327ee801ee6bac77e0c94b5ceb019c';
-
 export function WorksList() {
   const [works, setWorks] = useState<Work[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,14 +29,7 @@ export function WorksList() {
   useEffect(() => {
     async function fetchWorks() {
       try {
-        const response = await fetch(`${API_BASE}/works`, {
-          headers: {
-            'Authorization': `Token ${API_TOKEN}`,
-            'Accept': 'application/json',
-          },
-        });
-        if (!response.ok) throw new Error(`API returned ${response.status}: ${response.statusText}`);
-        const data: WorksResponse = await response.json();
+        const data = await apiFetch<WorksResponse>('/works');
         setWorks(data.results);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));
@@ -68,7 +59,6 @@ export function WorksList() {
       <ul className="works-list">
         {works.map((work) => (
           <li key={work.id} className="work-card">
-            {/* Each card is now a link to the document viewer */}
             <Link to={`/works/${work.id}`} className="work-card-link">
               <div className="work-header">
                 <span className="work-number">{work.numbered_title}</span>

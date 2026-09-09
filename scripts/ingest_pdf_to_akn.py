@@ -72,6 +72,11 @@ def extract_preface(text: str) -> str:
 
     Convention: the preface is the paragraph starting with 'In exercise' or
     'In pursuance' and running until the first 'Chapter' heading.
+
+    Cleanup steps applied:
+    - Strip ===== PAGE N ===== markers (from PDF extraction)
+    - Strip standalone page numbers (short numeric-only lines)
+    - Normalize whitespace
     """
     # Find preface start
     match = re.search(r"(In (?:exercise|pursuance) of.*?)(?=Chapter [IVX]+)",
@@ -81,8 +86,22 @@ def extract_preface(text: str) -> str:
         return ""
 
     preface_text = match.group(1).strip()
-    # Normalize whitespace
-    preface_text = re.sub(r"\s+", " ", preface_text)
+
+    # Strip page markers like "===== PAGE 3 ====="
+    preface_text = re.sub(r"={3,}\s*PAGE\s+\d+\s*={3,}", " ", preface_text)
+
+        # Strip standalone page numbers on their own lines (e.g. line with just "3")
+    # Match short numeric-only lines. Handles both mid-text (\n N \n) and
+    # trailing (\n N at end) cases.
+    preface_text = re.sub(r"\n\s*\d{1,3}\s*\n", "\n", preface_text)
+    preface_text = re.sub(r"\n\s*\d{1,3}\s*$", "", preface_text)
+    # Also strip trailing digits that got merged onto a text line after
+    # whitespace normalization (e.g. "specified. 3" at the very end)
+    preface_text = re.sub(r"\.\s+\d{1,3}\s*$", ".", preface_text)
+
+    # Normalize whitespace (collapse multiple spaces/newlines into single spaces)
+    preface_text = re.sub(r"\s+", " ", preface_text).strip()
+
     return f'''    <preface>
       <p>{preface_text}</p>
     </preface>'''

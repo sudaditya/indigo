@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { AknRenderer } from '../components/AknRenderer';
+import { apiFetch } from '../api/client';
 
 interface Work {
   id: number;
@@ -10,11 +11,11 @@ interface Work {
   publication_date: string;
 }
 
-const API_BASE = 'http://localhost:8000/api';
-const API_TOKEN = 'c6f1cada6b327ee801ee6bac77e0c94b5ceb019c';
+interface DocumentContent {
+  content: string;
+}
 
 export function DocumentViewer() {
-  // useParams reads :id from the URL — /works/3 gives us { id: "3" }
   const { id } = useParams<{ id: string }>();
 
   const [work, setWork] = useState<Work | null>(null);
@@ -26,27 +27,11 @@ export function DocumentViewer() {
     async function fetchDocument() {
       if (!id) return;
       try {
-        // Two parallel fetches: work metadata AND document XML content
-        // Promise.all runs them concurrently, faster than sequential
-        const [workRes, contentRes] = await Promise.all([
-          fetch(`${API_BASE}/works/${id}`, {
-            headers: { 'Authorization': `Token ${API_TOKEN}`, 'Accept': 'application/json' },
-          }),
-          // Get the associated document's XML. Since a Work has one active Document,
-          // we look it up via the documents endpoint filtered by work URI.
-          fetch(`${API_BASE}/documents/${id}/content`, {
-            headers: { 'Authorization': `Token ${API_TOKEN}`, 'Accept': 'application/json' },
-          }),
+        const [workData, contentData] = await Promise.all([
+          apiFetch<Work>(`/works/${id}`),
+          apiFetch<DocumentContent>(`/documents/${id}/content`),
         ]);
-
-        if (!workRes.ok) throw new Error(`Work fetch failed: ${workRes.status}`);
-        if (!contentRes.ok) throw new Error(`Content fetch failed: ${contentRes.status}`);
-
-        const workData: Work = await workRes.json();
-        const contentData = await contentRes.json();
-
         setWork(workData);
-        // The content endpoint returns { content: "<akn xml>" }
         setXml(contentData.content);
       } catch (err) {
         setError(err instanceof Error ? err.message : String(err));

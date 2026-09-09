@@ -333,35 +333,104 @@ started but incomplete — see "Session 9 pickup" below.
   coordination dashboard) still to build.
 - [ ] Phase 1, 4, 5
 
+### Session 9 — 2026-09-09 — Backlog closure
+
+**Objective:** Close all Tier 1 and Tier 2 backlog items from Session 8's
+partial work, plus verify Tier 3 auto-resolutions.
+
+**Item 1: Chapter number doubling — CLOSED.**
+- Updated scripts/prompts/extract_akn_body.md: chapter num should be
+  `<num>I</num>` not `<num>Chapter I</num>`. Added complete chapter+
+  section+paragraph XML example to prompt for reinforcement.
+- Updated frontend/src/components/AknRenderer.tsx: chapter case now
+  displays "Chapter {num} – {heading}" with en-dash separator, matching
+  the RBI PDF visual style seen in original source.
+- Regenerated MDs 290, 172, 356 via Gemini. Deleted old Works (5-6
+  were deleted with cascade), reloaded as Work IDs 7, 8, 9.
+- Verified in browser: MD 290 renders "Chapter I – Preliminary" correctly.
+
+**Item 2: Preface page markers — CLOSED (with pipeline improvement).**
+- Updated scripts/ingest_pdf_to_akn.py extract_preface() to strip:
+  - "===== PAGE N =====" markers
+  - Standalone digit-only lines
+  - Trailing digits at end of preface (defensive)
+- First regen attempt on MD 172/356 hit Gemini 429 quota limit
+  (free tier: 20 requests/day for gemini-3.6-flash, contrary to my
+  earlier "250/day" claim — I was wrong about this).
+- Wrote scripts/rewrap_akn.py — a deterministic-only re-wrapper.
+  Reads existing AKN XML, extracts the <body> Gemini produced,
+  regenerates FRBR meta + preface from Python logic, writes back.
+  No Gemini call needed for cosmetic wrapper changes.
+- This is a genuinely valuable pipeline improvement: separates
+  expensive/non-deterministic LLM output from cheap/deterministic
+  wrapping. Reusable any time we change wrapper logic in the future.
+- Reloaded MDs 172, 356 as Work IDs 12, 13.
+- Verified in browser: MD 172 preface ends cleanly at "...specified."
+  with no trailing page number.
+
+**Item 3: Preface word-break cleanup — AUTO-RESOLVED.**
+- With pymupdf (Session 7), artifacts like "S ections" / "al l other"
+  don't appear in extracted text at all. No fix needed.
+- Confirmed in current MD 172 preface: "Sections 21 and 35A", "all
+  other provisions" — clean.
+
+**Item 4: API_TOKEN duplication in frontend — CLOSED.**
+- Created frontend/src/config.ts — single source of truth for
+  API_BASE and API_TOKEN.
+- Created frontend/src/api/client.ts — apiFetch<T>() helper wrapping
+  fetch() with standard headers, error handling, and TypeScript generics
+  for type-safe responses.
+- Refactored WorksList.tsx and DocumentViewer.tsx to use apiFetch.
+  Duplication eliminated. Future pages will be one-line data fetches.
+- Verified: both pages load correctly after refactor.
+
+**Gemini quota lesson learned:**
+Free tier for gemini-3.6-flash is 20 requests/day, not 250 as I stated
+earlier. Reset happens at midnight Pacific Time. For full 250-MD corpus
+ingestion, we'll need paid tier ($10-30 total for entire corpus) or
+5+ days of rate-limited processing. Corrected in "extrapolation" note.
+
+**Phase status**
+- [x] Phase 0 — Indigo running with India as a Place
+- [x] Phase 2 — PDF → AKN pipeline solid + backlog closed
+- [~] Phase 3 — Frontend: Works list + Document viewer working, config
+  centralized. Additional features (search, filters, coordination
+  dashboard) still to build. Editor is Phase 4.
+- [ ] Phase 1, 4, 5
+
+### Session 10 target
+See planning below.
+
 ## Backlog — deferred fixes
 
 **Pipeline / ingestion:**
-- **Chapter number doubling:** In progress (Session 9 pickup). Fix by
-  splitting responsibility: prompt produces `<num>I</num>`, renderer
-  displays "Chapter I".
-- **Preface page markers:** extract_preface() in ingest_pdf_to_akn.py
-  doesn't strip `===== PAGE N =====` markers. Fix in Session 9.
 - **Complex tables untested:** Simple 2-column tables handled well
-  (MD 172). Multi-column financial, merged cells, multi-page tables
-  not yet tested. Consider docling/marker fallback if pymupdf + Gemini
-  fails on hard cases.
+  (MD 172). Multi-column financial matrices, merged cells, multi-page
+  tables not yet tested. Consider docling/marker fallback if pymupdf
+  + Gemini fails on hard cases when we scale to more MDs.
 - **Amendment history handling:** MD 356 loaded with July 2026
   consolidation date. Proper handling (original Work at 2025 date +
   amended Expression at 2026) is Phase 5 work.
 
 **Frontend:**
-- **API config duplication:** API_TOKEN and API_BASE hardcoded in
-  multiple components. Extract to shared frontend/src/config.ts in
-  Session 9.
-- **Auth is dev-only:** Token hardcoded in frontend source. Fine for
-  local POC. Production requires real auth flow (login page, token
-  refresh, secure storage). Phase 4+ concern.
+- **Auth is dev-only:** Token hardcoded in frontend source (config.ts).
+  Fine for local POC. Production requires real auth flow (login page,
+  token refresh, secure storage). Phase 4+ concern.
 - **No error boundaries:** If a React component throws, whole page
-  crashes. Add
+  crashes. Add ErrorBoundary component before Phase 4 (editor is
+  complex, will benefit from graceful error handling).
+- **No global state management:** Currently components fetch their own
+  data. Fine for read-only views. Editor state (unsaved changes,
+  active tools, selection) may need Zustand or similar. Defer until
+  editor work reveals what's actually needed.
 
-## Open questions
-- Session cadence — daily / weekly / weekend?
-- Whether to migrate repo from ~/Downloads/... to ~/Projects/... at
-  some point (works fine either way for now)
-- Whether to move to paid Gemini tier before full corpus ingestion
-  (public RBI data → free tier is fine, but paid tier removes rate limits)
+**Backend/infrastructure:**
+- **CORS is dev-permissive:** Django CorsMiddleware active with no
+  CORS_ALLOWED_ORIGINS restrictions. Fine for local dev. Production
+  hardening required.
+- **Indigo API write layer:** WorkSerializer/DocumentSerializer not
+  designed for writes. Currently working around via Django ORM.
+  If we need programmatic write access from React (for amendments),
+  2-3 sessions of custom serializer work required. Phase 4 concern.
+- **Gemini free tier is 20 req/day:** Consider paid tier before full
+  corpus ingestion. Cost estimate ~$10-30 for entire 250-MD corpus.
