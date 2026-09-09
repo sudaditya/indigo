@@ -393,13 +393,129 @@ ingestion, we'll need paid tier ($10-30 total for entire corpus) or
 **Phase status**
 - [x] Phase 0 — Indigo running with India as a Place
 - [x] Phase 2 — PDF → AKN pipeline solid + backlog closed
-- [~] Phase 3 — Frontend: Works list + Document viewer working, config
-  centralized. Additional features (search, filters, coordination
-  dashboard) still to build. Editor is Phase 4.
+- [~] Phase 3 — Frontend foundation done (list + viewer + config).
+  Next: Coordination Dashboard (novel RBI-specific feature — Sessions 10-13).
+  Then Phase 3 completion features (search, filters, TOC sidebar, print).
+- [ ] Phase 4 — Editor prototype (deferred until after Coordination Dashboard).
 - [ ] Phase 1, 4, 5
 
-### Session 10 target
-See planning below.
+### Session 10 target — start the Coordination Dashboard (Path C)
+
+**Strategic rationale:**
+This is the RBI-specific feature that would justify the POC to DoR
+leadership. Neither Indigo nor LEOS provides cross-team amendment
+coordination — this is novel work that demonstrates why we're building
+custom rather than just adopting an existing platform. Delivers a
+demoable capability in 3-4 sessions.
+
+**Reference material:** DoR organogram (Organogram.xlsx uploaded Session 9) —
+15 Groups across 2 Divisions, ~28 Sections. Model uses "WorkingUnit"
+polymorphic between Group and Section. See Session 10 log for final schema.
+
+**What it is:**
+A dashboard showing which teams are working on which MDs, flagging
+conflicts between drafts (from the original Session-0 mockup — the
+"Team A is drafting an amendment against clause 6(ii) which Team B
+just modified last week" scenario).
+
+**Session 10 scope (backend foundation):**
+- New Django app: rbi_registry_app/ (sits alongside indigo_api/)
+- New models: DraftAmendment, TeamOwnership, at minimum
+- Django migrations (creates Postgres tables)
+- REST endpoints for the coordination data (read-only initially)
+- Populated with realistic dummy data (real drafts require the editor)
+- Verify via curl before building UI
+
+**Session 11+ (frontend + iteration):**
+- React dashboard page consuming the new endpoints
+- Conflict visualization (which clauses have multiple in-flight drafts)
+- Timeline view (what's been amended recently, what's pending)
+- Filter/drill-down by team, by MD, by clause
+
+**Why not Path B (editor) instead:**
+Editor is technically more valuable but takes 4-6+ sessions with high
+uncertainty. Coordination dashboard delivers demoable output faster
+and doesn't compete with the editor — they're complementary features
+in the final product.
+
+**Deferred to Session 10+X (when editor prototype begins):**
+- Editor tech evaluation (CKEditor vs TipTap vs ProseMirror)
+- Read-only AKN loading into editor
+- Actual editing + save
+- Track changes prototype
+
+**Estimated timing:**
+- Sessions 10-11: Backend for coordination (models, endpoints, dummy data)
+- Sessions 12-13: Frontend dashboard
+- Session 14+: Editor prototype (Path B, deferred)
+
+### Session 9.5 — 2026-09-09 (planning) — Coordination Dashboard design
+
+Chose Path C (Coordination Dashboard) as Session 10-13 focus.
+Strategic rationale: novel RBI-specific feature not in Indigo or LEOS;
+demoable to DoR leadership; complements (doesn't compete with) the
+editor prototype which is deferred to Sessions 14+.
+
+WorkingUnit — Section OR group-level unit (polymorphic)
+Fields: name, short_code, division (PRD/COD),
+group_name. is_group_level() derived from name==group_name.
+UnitMembership — Users belong to WorkingUnits (many-to-many with
+primary flag). Supports secondments / dual roles.
+MDOwnership — One nodal WorkingUnit per Work (MD).
+Edit-open by default. edit_restricted + denied_units
+provide explicit denylist when needed.
+DraftAmendment — Core entity for coordination.
+Fields: work (FK), target_eid, change_type
+(insert/modify/delete/renumber), proposed_text,
+rationale, status (draft/in_review/approved/
+rejected/withdrawn), author_user, author_unit,
+timestamps.
+Indexed on (work, target_eid, status) and
+(author_unit, status) for dashboard queries.
+
+
+**Reference material:** DoR organogram uploaded (Organogram.xlsx).
+Structure: 2 Divisions → 15 Groups → ~28 Sections (some Groups have
+no sub-Sections; the Group is itself the working unit in those cases).
+
+**Nodal assignments for our 3 loaded MDs (real, not placeholder):**
+- MD 290 (UCB Dividends) → Accounting Section (Balance Sheet Group, PRD)
+- MD 172 (Climate Finance) → Sustainable Finance Group (group-level, PRD)
+- MD 356 (NBFC Income Recognition) → Stressed Assets Section (Credit Risk Group, PRD)
+
+**Dummy draft plan for demo (Session 10-11):**
+- MD 290: 2 conflicting drafts on same NNPA-ratio clause 
+  (same-target conflict — dashboard should flag)
+- MD 172: 3 non-conflicting drafts across different paragraphs
+- MD 356: 2 drafts on same paragraph — one MODIFY, one DELETE 
+  (delete-vs-edit conflict — dashboard should flag specifically)
+
+**Conflict types the dashboard will surface:**
+1. Same-target: multiple drafts on the same eId
+2. Delete-vs-edit: DELETE draft + MODIFY draft on same eId or descendants
+3. Nearby-clause (soft/informational): drafts on different children of same parent
+4. Semantic incoherence: DEFERRED to future intelligence layer.
+   Data model captures proposed_text so LLM-based analysis is possible later.
+
+### Session 10 (opening moves — planned)
+1. `django-admin startapp rbi_registry_app` inside container
+2. Register in INSTALLED_APPS (indigo/settings.py override)
+3. Write models.py per design above
+4. Generate migrations, run migrate
+5. Populate all ~34 WorkingUnits from parsed organogram
+6. Populate 8-10 dummy users, one primary UnitMembership each
+7. Populate 3 MDOwnership records (assignments above)
+8. Populate 7 DraftAmendment records (dummy plan above)
+9. Write serializers + views + URL routes for read-only endpoints:
+   - GET /api/rbi/units/           (all working units)
+   - GET /api/rbi/mds/             (MD ownership + status summary)
+   - GET /api/rbi/drafts/          (all drafts, filterable)
+   - GET /api/rbi/conflicts/       (computed conflicts across all MDs)
+10. Verify via curl before frontend work
+
+Realistic timing: 90-120 min if focused.
+
+**Data model designed (implementation in Session 10):**
 
 ## Backlog — deferred fixes
 
