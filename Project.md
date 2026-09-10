@@ -517,6 +517,75 @@ Realistic timing: 90-120 min if focused.
 
 **Data model designed (implementation in Session 10):**
 
+### Session 10 — 2026-09-XX — Coordination Dashboard: backend complete
+
+**Objective:** Backend for Coordination Dashboard (Path C). Result: fully working.
+
+Created Django app `rbi_registry_app/` alongside indigo_api/, registered
+in INSTALLED_APPS via settings.py override.
+
+**Models (4 tables, migrations applied):**
+- WorkingUnit — 35 units (Section OR group-level, per DoR organogram)
+- UnitMembership — user↔unit link with is_primary flag
+- MDOwnership — nodal unit per MD, edit-open by default
+- DraftAmendment — proposed changes with change_type, status, author
+
+**Seed data (scripts/seed_rbi_data.py):**
+- Wipes existing RBI-app data (leaves Indigo alone), then reseeds.
+- 35 working units populated from organogram
+- 10 dummy users, each with primary UnitMembership
+- 3 MDOwnership records (MD 290 → ACC, MD 172 → SFG, MD 356 → STA)
+- 7 DraftAmendments including 2 deliberate conflict scenarios:
+  * MD 290: 2 drafts on chp_II__para_6__ii (same-target conflict)
+  * MD 356: MODIFY + DELETE on chp_II__para_5 (delete-vs-edit conflict)
+  * MD 172: 3 non-conflicting drafts
+
+**Bug discovered + fixed:** Scripts importing rbi_registry_app fail
+without /app on sys.path (indigo_api is pip-installed, our app is not).
+Added 2-line sys.path fix at top of seed script; will repeat pattern
+for future scripts.
+
+**REST endpoints (all read-only, all require Token auth):**
+- GET /api/rbi/units/          — 35 working units
+- GET /api/rbi/mds/            — 3 MDs with draft_count + conflict_count
+- GET /api/rbi/drafts/         — 7 drafts, filterable by ?work= &status= &author_unit=
+- GET /api/rbi/conflicts/      — 2 computed conflicts, severity-ordered
+
+Conflict detection logic:
+- Same-target: multiple active drafts on same eId → severity=medium
+- Delete-vs-edit: DELETE draft + non-DELETE draft on same eId → severity=high
+- Withdrawn/rejected drafts excluded from active set
+- Computed on demand (POC scale); would cache at production scale
+
+All 4 endpoints verified via curl. Response shapes are dashboard-ready
+(nested work/author/unit info means frontend needs no follow-up calls).
+
+**Files added this session:**
+- rbi_registry_app/{__init__,apps,models,views,serializers,urls,admin}.py
+- rbi_registry_app/migrations/{__init__,0001_initial}.py
+- scripts/seed_rbi_data.py
+- indigo/settings.py (INSTALLED_APPS updated)
+- indigo/urls.py (added path('api/rbi/', include(...)))
+
+**Session 11 plan — dashboard frontend:**
+- New React page: /coordination
+- Consumes /api/rbi/mds/ and /api/rbi/conflicts/
+- Top-level view: 3 MD cards with draft/conflict badges
+- Conflicts panel: highlight the 2 conflicts with drilled-down details
+- Drill-down: click MD → see all drafts on that MD grouped by target eId
+- Navigation link added to app header
+
+Realistic estimate: 90-120 min. Should feel similar to Session 8
+(consuming REST from React) but with more complex data structures.
+
+### Phase status
+- [x] Phase 0 — Indigo running with India as Place
+- [x] Phase 2 — PDF → AKN pipeline solid
+- [~] Phase 3 — Frontend foundation done + Coordination backend done.
+  Next: Coordination frontend (Session 11). Then Phase 3 completion.
+- [ ] Phase 4 — Editor prototype (deferred to ~Session 14+)
+- [ ] Phase 1, 5
+
 ## Backlog — deferred fixes
 
 **Pipeline / ingestion:**

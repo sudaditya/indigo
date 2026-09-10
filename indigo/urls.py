@@ -8,6 +8,7 @@ admin.site.site_header = 'Indigo Admin'
 
 
 urlpatterns = [
+        path('api/rbi/', include('rbi_registry_app.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('indigo_content_api.urls')),
     path('api/', include('indigo_api.urls')),

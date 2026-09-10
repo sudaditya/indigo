@@ -607,3 +607,11 @@ REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'] = [
     'rest_framework.authentication.TokenAuthentication',
     'rest_framework.authentication.BasicAuthentication',
 ]
+
+# ============================================================
+# RBI Registry POC — register our custom Django app
+# ============================================================
+# rbi_registry_app hosts RBI-specific models (WorkingUnit, MDOwnership,
+# DraftAmendment) and their views. Sits alongside indigo_api/ which we
+# keep unchanged.
+INSTALLED_APPS = list(INSTALLED_APPS) + ['rbi_registry_app']
