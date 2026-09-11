@@ -270,3 +270,464 @@ body {
 .akn-table td p:last-child {
   margin-bottom: 0;
 }
+/* ============================================================
+   Tab navigation for document viewer
+   ============================================================ */
+.tab-nav {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+  border-bottom: 1px solid #d2d2d7;
+  padding: 0;
+}
+
+.tab-link {
+  padding: 0.75rem 1.25rem;
+  color: #6e6e73;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.tab-link:hover {
+  color: #1d1d1f;
+}
+
+.tab-link-active {
+  color: #007aff;
+  border-bottom-color: #007aff;
+}
+
+.tab-link-disabled {
+  padding: 0.75rem 1.25rem;
+  color: #c7c7cc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: not-allowed;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-badge {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  background: #f5f5f7;
+  color: #8e8e93;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+}
+
+.tab-content {
+  padding-top: 2rem;
+}
+
+.tab-placeholder {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: #6e6e73;
+  background: #fafafa;
+  border-radius: 8px;
+}
+/* ============================================================
+   Coordination tab
+   ============================================================ */
+.coordination-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+}
+
+.coord-section {
+  padding: 0;
+}
+
+.coord-heading {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #1d1d1f;
+}
+
+.coord-empty {
+  padding: 2rem;
+  background: #fafafa;
+  border-radius: 8px;
+  text-align: center;
+  color: #6e6e73;
+}
+
+.coord-ownership {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: #f0f7ff;
+  border-left: 3px solid #007aff;
+  border-radius: 4px;
+}
+
+.coord-ownership-label {
+  font-size: 0.85rem;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.coord-ownership-value {
+  font-size: 1rem;
+  color: #1d1d1f;
+  font-weight: 500;
+}
+
+.coord-ownership-code {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.8rem;
+  color: #6e6e73;
+  margin-left: 0.75rem;
+  font-weight: 400;
+}
+
+.coord-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---- Draft group card ---- */
+.draft-group {
+  background: white;
+  border: 1px solid #d2d2d7;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+/* Medium severity conflicts (same-target, both parties modifying) */
+.draft-group-conflict {
+  border-color: #ff9500;
+  background: #fffbf5;
+}
+
+/* High severity conflicts (delete-vs-edit — one party wants to remove
+   what another is amending). Red-tinted for stronger signal. */
+.draft-group-conflict-high {
+  border-color: #ff453a;
+  background: #fff5f5;
+  box-shadow: 0 0 0 1px #ff453a20;
+}
+
+.draft-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.draft-group-eid {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.85rem;
+  color: #6e6e73;
+}
+
+.draft-group-eid-label {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8e8e93;
+  font-weight: 600;
+}
+
+.conflict-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.conflict-badge-high {
+  background: #ffe0e0;
+  color: #c00;
+}
+
+.conflict-badge-medium {
+  background: #fff0d0;
+  color: #a06000;
+}
+
+/* ---- Draft list within a group ---- */
+.draft-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.draft-card {
+  padding: 0.9rem 1rem;
+  background: #fafafa;
+  border-radius: 6px;
+  border-left: 3px solid #d2d2d7;
+}
+
+.draft-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.change-type {
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.change-type-modify { background: #e3f2fd; color: #0d47a1; }
+.change-type-delete { background: #ffebee; color: #c62828; }
+.change-type-insert { background: #e8f5e9; color: #1b5e20; }
+.change-type-renumber { background: #f3e5f5; color: #4a148c; }
+
+.status-pill {
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.status-draft { background: #f0f0f0; color: #555; }
+.status-in_review { background: #fff3d1; color: #8b6914; }
+.status-approved { background: #d1f4d1; color: #007a33; }
+.status-rejected { background: #ffe0e0; color: #c00; }
+.status-withdrawn { background: #eee; color: #888; }
+
+.draft-author {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.draft-author-unit {
+  color: #6e6e73;
+  margin-left: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.draft-label {
+  font-size: 0.75rem;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.draft-proposed-text,
+.draft-rationale {
+  margin-bottom: 0.6rem;
+}
+
+.draft-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #1d1d1f;
+}
+
+.draft-text-muted {
+  color: #4a4a4a;
+  font-style: italic;
+}
+
+.draft-footer {
+  font-size: 0.75rem;
+  color: #8e8e93;
+  margin-top: 0.5rem;
+}
+/* ============================================================
+   Coordination indicators on Works list cards
+   ============================================================ */
+.work-coordination {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+  color: #6e6e73;
+  flex-wrap: wrap;
+}
+
+.work-nodal strong {
+  font-family: 'SF Mono', Monaco, monospace;
+  color: #1d1d1f;
+  background: #f0f7ff;
+  padding: 0.05rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+.work-drafts {
+  color: #4a4a4a;
+}
+
+.work-conflicts {
+  color: #c00;
+  font-weight: 500;
+}
+/* ============================================================
+   TipTap editor (minimal — expand in later sessions)
+   ============================================================ */
+.tiptap-wrapper {
+  border: 1px solid #d2d2d7;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  background: white;
+  min-height: 8rem;
+}
+
+/* TipTap's ProseMirror wrapper — the actual editable area */
+.tiptap-wrapper .ProseMirror {
+  outline: none;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #1d1d1f;
+}
+
+.tiptap-wrapper .ProseMirror:focus-visible {
+  outline: none;
+}
+
+/* Give paragraphs sensible spacing */
+.tiptap-wrapper .ProseMirror p {
+  margin: 0 0 0.75rem 0;
+}
+.tiptap-wrapper .ProseMirror p:last-child {
+  margin-bottom: 0;
+}
+
+/* Placeholder / empty state hint */
+.tiptap-wrapper .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #adadb0;
+  pointer-events: none;
+  height: 0;
+}
+/* ============================================================
+   Amendments tab scratchpad (temporary — will be replaced Step 3-4)
+   ============================================================ */
+.amendments-tab {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.amendments-scratchpad-intro h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #1d1d1f;
+}
+
+.amendments-scratchpad-intro p {
+  margin: 0;
+  color: #6e6e73;
+  font-size: 0.9rem;
+}
+
+.scratchpad-output {
+  padding: 1rem 1.25rem;
+  background: #fafafa;
+  border-radius: 8px;
+  border: 1px solid #e5e5ea;
+}
+
+.scratchpad-output summary {
+  cursor: pointer;
+  color: #6e6e73;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+.scratchpad-output pre {
+  margin: 0.75rem 0 0 0;
+  padding: 0.75rem;
+  background: #1d1d1f;
+  color: #f5f5f7;
+  border-radius: 6px;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* ============================================================
+   App header + persona switcher
+   ============================================================ */
+.app-header {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.75rem 2rem 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.persona-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.75rem;
+  background: white;
+  border: 1px solid #d2d2d7;
+  border-radius: 6px;
+  color: #1d1d1f;
+}
+
+.persona-label {
+  color: #6e6e73;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.persona-select {
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: #1d1d1f;
+  cursor: pointer;
+  padding: 0.1rem 0;
+  min-width: 14rem;
+}
+
+.persona-select:focus {
+  outline: none;
+}
+
+.persona-error {
+  color: #c00;
+  border-color: #ff453a;
+}

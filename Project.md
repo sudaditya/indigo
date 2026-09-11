@@ -21,17 +21,21 @@ Ingest, version-control, and enable structured amendment of RBI's ~250 Master Di
 ## Current phase status
 - [x] Phase 0 — Indigo running locally with India as a Place (Sessions 1-2)
 - [x] Phase 2 — PDF → AKN ingestion pipeline solid, 3 MDs loaded (Sessions 3, 5, 7)
-- [ ] Phase 1 — Strip Indigo frontend (see Strategic Decisions — likely reduced to
-  disabling/ignoring Indigo's browser UI rather than removing it)
-- [ ] Phase 3 — React frontend against real data (next up)
-- [ ] Phase 4 — WYSIWYG amendment editor
+- [~] Phase 3 — React frontend: Works list, Document viewer (tabbed), 
+  Coordination tab all working. Additional features (search, filters, 
+  timeline) still to build.
+- [~] Phase 4 — Editor prototype started (Session 12). Backend POST + 
+  TipTap + persona switcher done. Edit-and-save flow in Session 13.
+  Track changes, comments, review workflow: Sessions 14+.
+- [ ] Phase 1 — Strip Indigo browser UI (reduced to "ignore" — we use only 
+  Indigo's API/engine; their broken JS is irrelevant to our React frontend).
 - [ ] Phase 5 — Historical amendment migration
 
 ## Pilot corpus
 3 MDs loaded end-to-end, chosen for structural variety:
-- MD 290 — UCB Dividends (5 pages, simple structure). Work id=3.
-- MD 172 — Commercial Banks Climate Finance (14 pages, tables). Work id=4.
-- MD 356 — NBFC Income Recognition (25 pages, complex consolidated). Work id=5.
+- MD 290 — UCB Dividends (5 pages, simple structure). Work id=7.
+- MD 172 — Commercial Banks Climate Finance (14 pages, tables). Work id=12.
+- MD 356 — NBFC Income Recognition (25 pages, complex consolidated). Work id=13.
 
 Full corpus target: ~250 Master Directions.
 
@@ -399,56 +403,6 @@ ingestion, we'll need paid tier ($10-30 total for entire corpus) or
 - [ ] Phase 4 — Editor prototype (deferred until after Coordination Dashboard).
 - [ ] Phase 1, 4, 5
 
-### Session 10 target — start the Coordination Dashboard (Path C)
-
-**Strategic rationale:**
-This is the RBI-specific feature that would justify the POC to DoR
-leadership. Neither Indigo nor LEOS provides cross-team amendment
-coordination — this is novel work that demonstrates why we're building
-custom rather than just adopting an existing platform. Delivers a
-demoable capability in 3-4 sessions.
-
-**Reference material:** DoR organogram (Organogram.xlsx uploaded Session 9) —
-15 Groups across 2 Divisions, ~28 Sections. Model uses "WorkingUnit"
-polymorphic between Group and Section. See Session 10 log for final schema.
-
-**What it is:**
-A dashboard showing which teams are working on which MDs, flagging
-conflicts between drafts (from the original Session-0 mockup — the
-"Team A is drafting an amendment against clause 6(ii) which Team B
-just modified last week" scenario).
-
-**Session 10 scope (backend foundation):**
-- New Django app: rbi_registry_app/ (sits alongside indigo_api/)
-- New models: DraftAmendment, TeamOwnership, at minimum
-- Django migrations (creates Postgres tables)
-- REST endpoints for the coordination data (read-only initially)
-- Populated with realistic dummy data (real drafts require the editor)
-- Verify via curl before building UI
-
-**Session 11+ (frontend + iteration):**
-- React dashboard page consuming the new endpoints
-- Conflict visualization (which clauses have multiple in-flight drafts)
-- Timeline view (what's been amended recently, what's pending)
-- Filter/drill-down by team, by MD, by clause
-
-**Why not Path B (editor) instead:**
-Editor is technically more valuable but takes 4-6+ sessions with high
-uncertainty. Coordination dashboard delivers demoable output faster
-and doesn't compete with the editor — they're complementary features
-in the final product.
-
-**Deferred to Session 10+X (when editor prototype begins):**
-- Editor tech evaluation (CKEditor vs TipTap vs ProseMirror)
-- Read-only AKN loading into editor
-- Actual editing + save
-- Track changes prototype
-
-**Estimated timing:**
-- Sessions 10-11: Backend for coordination (models, endpoints, dummy data)
-- Sessions 12-13: Frontend dashboard
-- Session 14+: Editor prototype (Path B, deferred)
-
 ### Session 9.5 — 2026-09-09 (planning) — Coordination Dashboard design
 
 Chose Path C (Coordination Dashboard) as Session 10-13 focus.
@@ -456,15 +410,25 @@ Strategic rationale: novel RBI-specific feature not in Indigo or LEOS;
 demoable to DoR leadership; complements (doesn't compete with) the
 editor prototype which is deferred to Sessions 14+.
 
-WorkingUnit — Section OR group-level unit (polymorphic)
-Fields: name, short_code, division (PRD/COD),
-group_name. is_group_level() derived from name==group_name.
-UnitMembership — Users belong to WorkingUnits (many-to-many with
-primary flag). Supports secondments / dual roles.
-MDOwnership — One nodal WorkingUnit per Work (MD).
-Edit-open by default. edit_restricted + denied_units
-provide explicit denylist when needed.
-DraftAmendment — Core entity for coordination.
+**Data model (implementation in Session 10):**
+
+```
+WorkingUnit         — Section OR group-level unit (polymorphic)
+                      Fields: name, short_code, division (PRD/COD),
+                      group_name. is_group_level() derived from name==group_name.
+UnitMembership      — Users belong to WorkingUnits (many-to-many with
+                      primary flag). Supports secondments / dual roles.
+MDOwnership         — One nodal WorkingUnit per Work (MD).
+                      Edit-open by default. edit_restricted + denied_units
+                      provide explicit denylist when needed.
+DraftAmendment      — Core entity for coordination.
+                      Fields: work (FK), target_eid, change_type
+                      (insert/modify/delete/renumber), proposed_text,
+                      rationale, status, author_user, author_unit, timestamps.
+                      Indexed on (work, target_eid, status) and
+                      (author_unit, status) for dashboard queries.
+```
+
 Fields: work (FK), target_eid, change_type
 (insert/modify/delete/renumber), proposed_text,
 rationale, status (draft/in_review/approved/
@@ -497,25 +461,6 @@ no sub-Sections; the Group is itself the working unit in those cases).
 4. Semantic incoherence: DEFERRED to future intelligence layer.
    Data model captures proposed_text so LLM-based analysis is possible later.
 
-### Session 10 (opening moves — planned)
-1. `django-admin startapp rbi_registry_app` inside container
-2. Register in INSTALLED_APPS (indigo/settings.py override)
-3. Write models.py per design above
-4. Generate migrations, run migrate
-5. Populate all ~34 WorkingUnits from parsed organogram
-6. Populate 8-10 dummy users, one primary UnitMembership each
-7. Populate 3 MDOwnership records (assignments above)
-8. Populate 7 DraftAmendment records (dummy plan above)
-9. Write serializers + views + URL routes for read-only endpoints:
-   - GET /api/rbi/units/           (all working units)
-   - GET /api/rbi/mds/             (MD ownership + status summary)
-   - GET /api/rbi/drafts/          (all drafts, filterable)
-   - GET /api/rbi/conflicts/       (computed conflicts across all MDs)
-10. Verify via curl before frontend work
-
-Realistic timing: 90-120 min if focused.
-
-**Data model designed (implementation in Session 10):**
 
 ### Session 10 — 2026-09-XX — Coordination Dashboard: backend complete
 
@@ -578,13 +523,165 @@ All 4 endpoints verified via curl. Response shapes are dashboard-ready
 Realistic estimate: 90-120 min. Should feel similar to Session 8
 (consuming REST from React) but with more complex data structures.
 
-### Phase status
-- [x] Phase 0 — Indigo running with India as Place
-- [x] Phase 2 — PDF → AKN pipeline solid
-- [~] Phase 3 — Frontend foundation done + Coordination backend done.
-  Next: Coordination frontend (Session 11). Then Phase 3 completion.
-- [ ] Phase 4 — Editor prototype (deferred to ~Session 14+)
-- [ ] Phase 1, 5
+### Session 11 — 2026-09-10 — Coordination Dashboard: frontend complete
+
+**Objective:** Build the Coordination Dashboard UI on top of Session 10's 
+backend. Result: fully working, matches the concept mockup's tab-based design.
+
+**Design decision:** Coordination as a property of each MD (per-MD tab in 
+the viewer), NOT as a standalone department-wide dashboard. Reasoning: 
+matches how officers actually work (always in the context of a document); 
+aggregate view is a derived read for later. Deferred department-wide 
+dashboard to a future session.
+
+**Structure of MD viewer refactored to tabbed layout:**
+- Content tab (existing AKN renderer)
+- Coordination tab (new — this session)
+- Timeline tab (placeholder, "SOON" badge)
+- Amendments tab (placeholder, "SOON" badge)
+- URL routes: /works/:id → redirects to /works/:id/content; 
+  /works/:id/coordination for the new tab. React Router nested routes.
+
+**Coordination tab shows for the current MD:**
+- Nodal owner strip (unit name, short code, division)
+- Conflicts section (with high/medium severity visual distinction — 
+  red border for delete-vs-edit, amber for same-target)
+- Other active drafts section (grouped by target eId)
+- Each draft card: change type badge, status pill, author name + unit, 
+  proposed text, rationale, created date
+
+**Client-side conflict detection** (frontend/src/pages/document-viewer/conflict-detection.ts) —
+mirrors backend logic scoped to a single MD. No need for a separate 
+conflicts endpoint; the drafts endpoint + client grouping is sufficient.
+
+**Works list enhanced with coordination indicators:**
+- Each card shows "Nodal: [code]" + draft count + conflict count 
+  (with ⚠ symbol when conflicts exist).
+
+**Files added:**
+- frontend/src/api/types.ts — shared TypeScript types matching backend serializers
+- frontend/src/pages/document-viewer/{ContentTab,CoordinationTab,TabNav,conflict-detection}.tsx/.ts
+- Extended apiFetch() with optional query params
+
+**Files modified:**
+- frontend/src/pages/DocumentViewer.tsx — refactored into tabbed shell
+- frontend/src/pages/WorksList.tsx — added coordination indicators
+- frontend/src/App.tsx — nested route pattern (/works/:id/*)
+- frontend/src/App.css — tab nav styles, coordination styles, conflict styles
+
+**Small bug encountered:** App.tsx changes needed a save I forgot to do, 
+which caused MDs to briefly not render. Ctrl-S habit reinforced.
+
+**Verified with all 3 MDs:**
+- MD 290: same-target conflict on chp_II__para_6__ii renders with amber border
+- MD 356: delete-vs-edit conflict on chp_II__para_5 renders with red border
+- MD 172: 3 non-conflicting drafts, grouped correctly
+
+Session accomplished more than planned — the aggregate department-wide 
+dashboard (which was Session 11's original target) got reframed and 
+deferred; per-MD coordination is a more natural fit and got built end-to-end.
+
+### Session 12 — 2026-09-10 — Phase 4 open: editor prototype (partial)
+
+**Objective:** Start Phase 4 — install editor, prove edit-and-save flow.
+Result: half done. Backend POST + editor install + persona layer complete;
+edit affordance and save flow deferred to Session 13.
+
+**Strategic decisions locked in via fresh web search:**
+
+*Editor choice: TipTap.*
+- Built on ProseMirror (2.5M+ weekly downloads; used by Notion, GitLab,
+  Linear, Substack, Vercel). Battle-tested foundation.
+- Explicit legal-industry marketing from TipTap: dedicated
+  "Document automation for your legal product" page, DOCX round-trip
+  with tracked changes, redlining, audit trails.
+- Track changes more mature than initially assumed:
+  * Official Pro extension `@tiptap-pro/extension-tracked-changes`
+    (evolving, under 1.0.0)
+  * Multiple production-ready open-source alternatives
+    (sungkhum/tiptap-track-changes, chenyuncai/tiptap-track-change-extension),
+    MIT-licensed
+- MIT-licensed core; Pro subscription only needed if RBI wants official
+  polished extensions for production. POC is 100% open-source.
+- Trade-off honestly stated: 2-4 weeks to build fully-featured editor
+  (per external benchmark). We build the UI layer ourselves.
+- ProseMirror's strict schema of nodes matches AKN's structured hierarchy.
+  Editor can natively understand chapter → section → paragraph → subparagraph.
+
+*Editing approach: per-provision, mapped to DraftAmendment.*
+- User clicks a chapter, section, or specific clause to edit — schema
+  supports variable scope, target_eid gets set to whatever the user
+  actually clicked.
+- Chapter/section-scoped editing is a Session 13-14 schema layer;
+  paragraph-level suffices for MVP.
+- Full-document editing NOT built. Per RBI DoR workflow: officers target
+  specific clauses, not whole documents.
+
+**Step 1 — Enable POST on DraftAmendment endpoint (COMPLETE):**
+- Changed `ReadOnlyModelViewSet` → `ModelViewSet` in views.py.
+- Added write-only IntegerFields (work_id, author_user_id, author_unit_id)
+  in DraftAmendmentSerializer, plus validate_*/create/update methods to
+  resolve IDs → model instances.
+- **Bug hit:** initial version used PrimaryKeyRelatedField with lazy
+  queryset via __init__. Failed because DRF validates fields at
+  class-definition time. Fix: use plain IntegerField write-only,
+  validate + resolve in methods.
+- Also learned: when Django dev server crashes on import, container
+  is running but Python process is dead — file saves aren't picked up.
+  Fix: `docker compose restart web`.
+- Verified: POST creates a draft (HTTP 201), draft appears in
+  Coordination tab, DELETE removes it (HTTP 204).
+
+**Step 2 — TipTap installed (COMPLETE):**
+- Packages: @tiptap/react @tiptap/starter-kit @tiptap/pm
+- Created TipTapEditor.tsx (minimal wrapper with onChange callback)
+- Wired into Amendments tab as a scratchpad (temporary — will move to
+  Content tab in Step 4). Amendments tab de-greyed.
+- Verified: editor renders, accepts typing, Cmd+B/I/etc. work,
+  HTML extraction confirmed by live-updating <details> block.
+
+**Step 3 — Persona switcher (COMPLETE):**
+- New backend endpoint: `GET /api/rbi/personas/` returns all 10 dummy
+  users with their primary unit info in a single call.
+- PersonaContext (React Context + localStorage persistence)
+- PersonaSwitcher component (native <select> for accessibility)
+- App.tsx now wraps everything in PersonaProvider; switcher in app-header.
+- Verified: default is Ananya Desai (alphabetically first), switching
+  works, refresh persists selection.
+
+**Files added:**
+- frontend/src/components/TipTapEditor.tsx
+- frontend/src/components/PersonaSwitcher.tsx
+- frontend/src/context/PersonaContext.tsx
+- frontend/src/pages/document-viewer/AmendmentsTab.tsx (scratchpad)
+
+**Files modified:**
+- rbi_registry_app/views.py (POST enabled, personas endpoint added)
+- rbi_registry_app/serializers.py (DraftAmendmentSerializer write support)
+- rbi_registry_app/urls.py (personas path)
+- frontend/src/api/types.ts (Persona, PersonasResponse)
+- frontend/src/pages/DocumentViewer.tsx (Amendments tab wired)
+- frontend/src/App.tsx (PersonaProvider wrapper, header layout)
+- frontend/src/App.css (editor + persona switcher styles)
+
+**Session 13 pickup — remaining Steps 4-6:**
+- Step 4 (~30 min): Edit affordance in Content tab. Add click handler
+  to paragraphs in AknRenderer that opens the TipTap editor (inline
+  or modal) with that paragraph's text pre-populated. target_eid is
+  captured from the clicked node's eId attribute.
+- Step 5 (~30 min): Save flow. Editor's onChange → captured HTML →
+  POST to /api/rbi/drafts/ with change_type='modify', author from
+  current persona, target_eid from clicked node.
+- Step 6 (~10 min): Verify — new draft appears in Coordination tab
+  immediately after save. End-to-end flow proven.
+
+**Not attempted in Session 13 either — deferred to Sessions 14+:**
+- Track changes (character-level insertions/deletions with accept/reject)
+- Comments on drafts
+- Review/approval workflow (in_review → approved/rejected transitions)
+- "Insert new paragraph" / "Delete paragraph" affordances
+- Chapter/section-scoped editing (schema layer expansion)
+- Structural validation of proposed changes vs AKN grammar
 
 ## Backlog — deferred fixes
 
@@ -619,3 +716,10 @@ Realistic estimate: 90-120 min. Should feel similar to Session 8
   2-3 sessions of custom serializer work required. Phase 4 concern.
 - **Gemini free tier is 20 req/day:** Consider paid tier before full
   corpus ingestion. Cost estimate ~$10-30 for entire 250-MD corpus.
+  - **Django dev server doesn't auto-recover from import crashes:** When
+  code has a Python-level error that breaks import (e.g., serializer
+  field validation failing at class-definition time), the container is
+  "running" but the Python process is dead. File saves aren't picked up.
+  Fix: `docker compose restart web`. Rule of thumb: if
+  `docker compose logs web` shows a traceback, always restart before
+  troubleshooting further.

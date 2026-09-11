@@ -20,4 +20,5 @@ urlpatterns = [
     path('', include(router.urls)),
     # Custom APIView (not a viewset — needs its own path)
     path('conflicts/', views.ConflictsView.as_view(), name='conflicts'),
+    path('personas/', views.ViewablePersonasView.as_view(), name='personas'),  # ← NEW
 ]

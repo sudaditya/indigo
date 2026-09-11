@@ -89,22 +89,98 @@ class MDOwnershipSerializer(serializers.ModelSerializer):
 
 
 class DraftAmendmentSerializer(serializers.ModelSerializer):
-    """Full detail for a draft. Includes nested author + unit + work info."""
+    """Read/write serializer for DraftAmendment.
+
+    On READ: returns nested work/author_user/author_unit objects with
+    full detail (no follow-up API calls needed by frontend).
+
+    On WRITE (POST/PATCH): accepts work_id, author_user_id, author_unit_id
+    to identify relationships. The nested objects on read are read-only.
+    """
+    # Nested representations for GET responses (read-only)
     work = WorkBriefSerializer(read_only=True)
     author_user = UserBriefSerializer(read_only=True)
     author_unit = WorkingUnitSerializer(read_only=True)
+
+    # Display versions of the choice fields (read-only)
     change_type_display = serializers.CharField(source='get_change_type_display', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
+
+    # Write-only fields for creating / updating relationships.
+    # These are declared as generic IntegerFields, then validate_* methods
+    # look up and attach the corresponding model instances during save.
+    # This avoids DRF's PrimaryKeyRelatedField requiring a queryset at
+    # class-definition time (which forces early imports).
+    work_id = serializers.IntegerField(write_only=True)
+    author_user_id = serializers.IntegerField(write_only=True)
+    author_unit_id = serializers.IntegerField(write_only=True)
 
     class Meta:
         model = DraftAmendment
         fields = [
             'id',
-            'work',
+            'work', 'work_id',
             'target_eid',
             'change_type', 'change_type_display',
             'proposed_text', 'rationale',
             'status', 'status_display',
-            'author_user', 'author_unit',
+            'author_user', 'author_user_id',
+            'author_unit', 'author_unit_id',
             'created_at', 'updated_at', 'submitted_at',
         ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+    def validate_work_id(self, value):
+        from indigo_api.models import Work
+        if not Work.objects.filter(id=value).exists():
+            raise serializers.ValidationError(f"Work id={value} does not exist.")
+        return value
+
+    def validate_author_user_id(self, value):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        if not User.objects.filter(id=value).exists():
+            raise serializers.ValidationError(f"User id={value} does not exist.")
+        return value
+
+    def validate_author_unit_id(self, value):
+        from .models import WorkingUnit
+        if not WorkingUnit.objects.filter(id=value).exists():
+            raise serializers.ValidationError(f"WorkingUnit id={value} does not exist.")
+        return value
+
+    def create(self, validated_data):
+        """Turn *_id fields into actual FK relationships on the model."""
+        from indigo_api.models import Work
+        from django.contrib.auth import get_user_model
+        from .models import WorkingUnit
+
+        # Pop the *_id fields and resolve to model instances
+        work = Work.objects.get(id=validated_data.pop('work_id'))
+        author_user = get_user_model().objects.get(id=validated_data.pop('author_user_id'))
+        author_unit = WorkingUnit.objects.get(id=validated_data.pop('author_unit_id'))
+
+        return DraftAmendment.objects.create(
+            work=work,
+            author_user=author_user,
+            author_unit=author_unit,
+            **validated_data,
+        )
+
+    def update(self, instance, validated_data):
+        """Same treatment for PATCH/PUT: resolve *_id → instance if present."""
+        from indigo_api.models import Work
+        from django.contrib.auth import get_user_model
+        from .models import WorkingUnit
+
+        if 'work_id' in validated_data:
+            instance.work = Work.objects.get(id=validated_data.pop('work_id'))
+        if 'author_user_id' in validated_data:
+            instance.author_user = get_user_model().objects.get(id=validated_data.pop('author_user_id'))
+        if 'author_unit_id' in validated_data:
+            instance.author_unit = WorkingUnit.objects.get(id=validated_data.pop('author_unit_id'))
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

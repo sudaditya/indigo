@@ -37,9 +37,13 @@ class MDOwnershipViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class DraftAmendmentViewSet(viewsets.ReadOnlyModelViewSet):
-    """GET /api/rbi/drafts/       — list all drafts
-       GET /api/rbi/drafts/{id}/  — one draft
+class DraftAmendmentViewSet(viewsets.ModelViewSet):
+    """GET    /api/rbi/drafts/       — list all drafts
+       GET    /api/rbi/drafts/{id}/  — one draft
+       POST   /api/rbi/drafts/       — create a new draft
+       PUT    /api/rbi/drafts/{id}/  — replace an existing draft
+       PATCH  /api/rbi/drafts/{id}/  — partial update
+       DELETE /api/rbi/drafts/{id}/  — delete a draft
 
     Supports filtering via query params:
       ?work=<id>            — drafts for a specific MD
@@ -131,3 +135,43 @@ class ConflictsView(APIView):
             'count': len(conflicts),
             'conflicts': conflicts,
         })
+class ViewablePersonasView(APIView):
+    """GET /api/rbi/personas/
+
+    Returns the list of dummy users available for "Viewing as" persona switching.
+    Each persona bundles user + their primary WorkingUnit info in one call,
+    so the frontend dropdown doesn't need multiple fetches.
+
+    Not a general "list users" endpoint — deliberately narrow for the POC's
+    persona-switching use case.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+
+        # Only dummy users (those with an @rbi.org.in email) — exclude the
+        # superuser sudaditya. In production, this whole endpoint goes away
+        # once we have real auth.
+        users = User.objects.filter(
+            email__endswith='@rbi.org.in'
+        ).prefetch_related('unit_memberships__unit').order_by('first_name')
+
+        personas = []
+        for user in users:
+            primary = user.unit_memberships.filter(is_primary=True).first()
+            if not primary:
+                continue
+            personas.append({
+                'user_id': user.id,
+                'username': user.username,
+                'full_name': f"{user.first_name} {user.last_name}".strip(),
+                'unit_id': primary.unit.id,
+                'unit_name': primary.unit.name,
+                'unit_short_code': primary.unit.short_code,
+                'division': primary.unit.division,
+                'division_display': primary.unit.get_division_display(),
+            })
+
+        return Response({'personas': personas})

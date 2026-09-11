@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
-import { AknRenderer } from '../components/AknRenderer';
+import { Link, useParams, Routes, Route, Navigate } from 'react-router';
 import { apiFetch } from '../api/client';
+import { TabNav } from './document-viewer/TabNav';
+import { ContentTab } from './document-viewer/ContentTab';
+import { CoordinationTab } from './document-viewer/CoordinationTab';
+import { AmendmentsTab } from './document-viewer/AmendmentsTab';
 
 interface Work {
   id: number;
@@ -51,20 +54,36 @@ export function DocumentViewer() {
     </div>
   );
 
+  if (!id || !work) return null;
+
+  const tabs = [
+    { key: 'content', label: 'Content' },
+    { key: 'coordination', label: 'Coordination' },
+    { key: 'timeline', label: 'Timeline', disabled: true },
+    { key: 'amendments', label: 'Amendments' },
+  ];
+
   return (
     <div className="app document-view">
       <Link to="/" className="back-link">← Back to Works</Link>
 
       <header className="document-header">
-        <div className="doc-number">{work?.numbered_title}</div>
-        <h1 className="doc-title">{work?.title}</h1>
+        <div className="doc-number">{work.numbered_title}</div>
+        <h1 className="doc-title">{work.title}</h1>
         <div className="doc-meta">
-          Published {work?.publication_date} · <span className="work-uri">{work?.frbr_uri}</span>
+          Published {work.publication_date} · <span className="work-uri">{work.frbr_uri}</span>
         </div>
       </header>
 
-      <div className="document-body">
-        {xml && <AknRenderer xml={xml} />}
+      <TabNav workId={id} tabs={tabs} />
+
+      <div className="tab-content">
+        <Routes>
+          <Route index element={<Navigate to="content" replace />} />
+          <Route path="content" element={<ContentTab xml={xml} />} />
+          <Route path="coordination" element={<CoordinationTab workId={id} />} />
+          <Route path="amendments" element={<AmendmentsTab />} />
+        </Routes>
       </div>
     </div>
   );

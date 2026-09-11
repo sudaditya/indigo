@@ -4,12 +4,28 @@
  *
  * Usage:
  *   const data = await apiFetch<WorksResponse>('/works');
- *   const doc = await apiFetch<DocumentContent>(`/documents/${id}/content`);
+ *   const drafts = await apiFetch<DraftsResponse>('/rbi/drafts/', { work: 7 });
  */
 import { API_BASE, API_TOKEN } from '../config';
 
-export async function apiFetch<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
+type QueryParams = Record<string, string | number | undefined>;
+
+export async function apiFetch<T>(path: string, params?: QueryParams): Promise<T> {
+  let url = `${API_BASE}${path}`;
+
+  // Append query string if params provided (skipping undefined values)
+  if (params) {
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined) {
+        searchParams.append(key, String(value));
+      }
+    }
+    const qs = searchParams.toString();
+    if (qs) url += `?${qs}`;
+  }
+
+  const response = await fetch(url, {
     headers: {
       'Authorization': `Token ${API_TOKEN}`,
       'Accept': 'application/json',
