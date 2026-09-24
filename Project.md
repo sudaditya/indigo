@@ -705,6 +705,10 @@ edit affordance and save flow deferred to Session 13.
   data. Fine for read-only views. Editor state (unsaved changes,
   active tools, selection) may need Zustand or similar. Defer until
   editor work reveals what's actually needed.
+- **TipTap scratchpad in Amendments tab is temporary:** Session 12 used
+  the Amendments tab as an editor sandbox to verify TipTap install.
+  Real flow (edit specific provision, save as DraftAmendment) lives in
+  Content tab (Session 13, Step 4-6).
 
 **Backend/infrastructure:**
 - **CORS is dev-permissive:** Django CorsMiddleware active with no
@@ -716,7 +720,7 @@ edit affordance and save flow deferred to Session 13.
   2-3 sessions of custom serializer work required. Phase 4 concern.
 - **Gemini free tier is 20 req/day:** Consider paid tier before full
   corpus ingestion. Cost estimate ~$10-30 for entire 250-MD corpus.
-  - **Django dev server doesn't auto-recover from import crashes:** When
+- **Django dev server doesn't auto-recover from import crashes:** When
   code has a Python-level error that breaks import (e.g., serializer
   field validation failing at class-definition time), the container is
   "running" but the Python process is dead. File saves aren't picked up.
