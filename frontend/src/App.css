@@ -731,3 +731,487 @@ body {
   color: #c00;
   border-color: #ff453a;
 }
+/* ============================================================
+   Selectable provisions (Content tab)
+   ============================================================ */
+
+/* Give paragraphs/subparagraphs a subtle "clickable" cue */
+.akn-selectable {
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.12s ease, box-shadow 0.12s ease;
+  position: relative;
+}
+
+.akn-selectable:hover {
+  background: #f0f7ff;
+}
+
+.akn-selectable.akn-selected {
+  background: #e3f2fd;
+  box-shadow: 0 0 0 2px #007aff;
+}
+
+/* Ensure nested selectables don't stack backgrounds oddly */
+.akn-selectable .akn-selectable:hover {
+  background: #d9edff;
+}
+
+/* ============================================================
+   Floating selection action bar
+   ============================================================ */
+.selection-action-bar {
+  position: sticky;
+  bottom: 1rem;
+  margin-top: 2rem;
+  padding: 0.9rem 1.25rem;
+  background: white;
+  border: 1px solid #d2d2d7;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.selection-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.selection-label {
+  font-size: 0.75rem;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.selection-eid {
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.85rem;
+  color: #1d1d1f;
+  background: #f5f5f7;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.selection-preview {
+  font-size: 0.85rem;
+  color: #6e6e73;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.selection-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.btn-primary {
+  background: #007aff;
+  color: white;
+}
+.btn-primary:hover {
+  background: #0062cc;
+}
+
+.btn-secondary {
+  background: #f5f5f7;
+  color: #1d1d1f;
+}
+.btn-secondary:hover {
+  background: #e5e5ea;
+}
+
+/* ============================================================
+   Modal (reusable)
+   ============================================================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 2rem;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 780px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e5ea;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: #1d1d1f;
+  font-family: 'SF Mono', Monaco, monospace;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: #6e6e73;
+  padding: 0 0.4rem;
+  line-height: 1;
+}
+.modal-close:hover { color: #1d1d1f; }
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e5ea;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.modal-footer-meta {
+  font-size: 0.85rem;
+  color: #6e6e73;
+}
+.modal-footer-meta strong {
+  color: #1d1d1f;
+}
+
+.modal-footer-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Disabled button style */
+.btn:disabled {
+  background: #e5e5ea;
+  color: #8e8e93;
+  cursor: not-allowed;
+}
+.btn:disabled:hover {
+  background: #e5e5ea;
+}
+
+/* ============================================================
+   Editor modal body
+   ============================================================ */
+.editor-modal-instructions {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f0f7ff;
+  border-left: 3px solid #007aff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #1d1d1f;
+}
+.editor-modal-instructions p {
+  margin: 0;
+}
+.editor-modal-instructions code {
+  font-family: 'SF Mono', Monaco, monospace;
+  background: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.editor-modal-diff {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid #e5e5ea;
+}
+
+.editor-modal-diff summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #6e6e73;
+  user-select: none;
+}
+
+.editor-modal-diff pre {
+  margin: 0.5rem 0 0 0;
+  padding: 0.75rem;
+  background: #1d1d1f;
+  color: #f5f5f7;
+  border-radius: 6px;
+  font-family: 'SF Mono', Monaco, monospace;
+  font-size: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+/* ============================================================
+   Rationale field
+   ============================================================ */
+.rationale-field {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.rationale-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.field-optional {
+  font-weight: 400;
+  color: #8e8e93;
+  font-size: 0.8rem;
+}
+
+.rationale-textarea {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #d2d2d7;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 3rem;
+}
+
+.rationale-textarea:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px #007aff20;
+}
+
+/* ============================================================
+   Save error inside modal
+   ============================================================ */
+.save-error {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff2f2;
+  border-left: 3px solid #ff453a;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #a01010;
+}
+.save-error strong {
+  color: #a01010;
+}
+
+/* ============================================================
+   Save-success toast (floats top-right)
+   ============================================================ */
+.save-toast {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: #d1f4d1;
+  color: #007a33;
+  border: 1px solid #a8e6a8;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 8px 20px rgba(0, 122, 51, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  z-index: 200;
+  font-weight: 500;
+  font-size: 0.9rem;
+  animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.save-toast-close {
+  background: none;
+  border: none;
+  color: #007a33;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  opacity: 0.7;
+}
+.save-toast-close:hover { opacity: 1; }
+/* ============================================================
+   Works list header with Upload button
+   ============================================================ */
+.works-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btn-upload {
+  padding: 0.6rem 1.15rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Upload modal form
+   ============================================================ */
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.upload-instructions {
+  padding: 0.75rem 1rem;
+  background: #f0f7ff;
+  border-left: 3px solid #007aff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+.upload-instructions p {
+  margin: 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1d1d1f;
+}
+
+.required {
+  color: #ff453a;
+  margin-left: 0.15rem;
+}
+
+.form-field input[type="text"],
+.form-field input[type="date"] {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #d2d2d7;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: white;
+}
+
+.form-field input[type="text"]:focus,
+.form-field input[type="date"]:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 3px #007aff20;
+}
+
+.form-field input[type="file"] {
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+}
+
+.form-field input:disabled {
+  background: #f5f5f7;
+  color: #8e8e93;
+  cursor: not-allowed;
+}
+
+.field-hint {
+  font-size: 0.8rem;
+  color: #8e8e93;
+}
+
+.file-info {
+  font-size: 0.85rem;
+  color: #007a33;
+  padding: 0.4rem 0.6rem;
+  background: #d1f4d1;
+  border-radius: 4px;
+}
+
+.upload-error {
+  padding: 0.75rem 1rem;
+  background: #fff2f2;
+  border-left: 3px solid #ff453a;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #a01010;
+}
+
+.upload-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: #007aff;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #007aff20;
+  border-top-color: #007aff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -48,6 +48,9 @@ RUN npm ci --no-audit --ignore-scripts --omit=dev
 # Bring pip up to date; pip <= 22 (the default on ubuntu 22.04) is not supported
 RUN pip install --upgrade pip --break-system-packages --ignore-installed
 
+# rbi_registry_app dependencies: PDF extraction + Gemini SDK
+RUN pip install --break-system-packages pymupdf google-genai python-dotenv
+
 # These are production-only dependencies
 RUN pip install psycopg==3.2.12 --break-system-packages
 

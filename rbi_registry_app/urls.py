@@ -21,4 +21,5 @@ urlpatterns = [
     # Custom APIView (not a viewset — needs its own path)
     path('conflicts/', views.ConflictsView.as_view(), name='conflicts'),
     path('personas/', views.ViewablePersonasView.as_view(), name='personas'),  # ← NEW
+    path('upload-md/', views.UploadMDView.as_view(), name='upload-md'), # ← NEW
 ]

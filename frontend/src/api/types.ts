@@ -86,3 +86,28 @@ export interface Persona {
 export interface PersonasResponse {
   personas: Persona[];
 }
+/**
+ * Payload for POST /api/rbi/drafts/ — matches the write-only fields on
+ * DraftAmendmentSerializer.
+ */
+export interface DraftAmendmentCreate {
+  work_id: number;
+  target_eid: string;
+  change_type: ChangeType;
+  proposed_text: string;
+  rationale?: string;
+  status?: DraftStatus;
+  author_user_id: number;
+  author_unit_id: number;
+}
+/**
+ * Response from POST /api/rbi/upload-md/ on success (201).
+ * A slimmer version of Work — just enough to redirect to the new MD.
+ */
+export interface UploadedMDResponse {
+  id: number;
+  frbr_uri: string;
+  numbered_title: string;
+  title: string;
+  publication_date: string;
+}

@@ -8,6 +8,10 @@ from django.db.models import Count
 from rest_framework import viewsets, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, FormParser
+from rbi_registry_app.pipeline import (
+    run_full_pipeline, MDMetadata, PipelineError
+)
 
 from indigo_api.models import Work
 from .models import WorkingUnit, MDOwnership, DraftAmendment
@@ -175,3 +179,98 @@ class ViewablePersonasView(APIView):
             })
 
         return Response({'personas': personas})
+    
+
+class UploadMDView(APIView):
+    """POST /api/rbi/upload-md/
+
+    Multi-part upload endpoint. Accepts:
+      - pdf_file:  PDF file (multipart)
+      - number:    MD number (form field, e.g. "290")
+      - date:      publication date, YYYY-MM-DD (form field)
+      - title:     full RBI title (form field)
+
+    Runs the full pipeline (PDF → text → AKN → Work), returns the created Work.
+
+    Timing note: Gemini call can take 30-60s. Frontend must show a spinner.
+    Django's default request timeout is fine (0 = no timeout for dev server).
+
+    Errors are returned as JSON with a 'detail' key. Common cases:
+      - 400: missing fields, bad PDF, invalid date, duplicate FRBR URI
+      - 429: Gemini daily quota exhausted (mapped from pipeline)
+      - 503: Gemini temporarily unavailable
+      - 500: unexpected pipeline failure
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        # --- Validate required fields ---
+        pdf_file = request.FILES.get('pdf_file')
+        number = request.data.get('number', '').strip()
+        date = request.data.get('date', '').strip()
+        title = request.data.get('title', '').strip()
+
+        errors = {}
+        if not pdf_file:
+            errors['pdf_file'] = 'PDF file is required.'
+        if not number:
+            errors['number'] = 'MD number is required.'
+        if not date:
+            errors['date'] = 'Publication date is required (YYYY-MM-DD).'
+        if not title:
+            errors['title'] = 'Title is required.'
+        if errors:
+            return Response(
+                {'detail': 'Missing required fields.', 'errors': errors},
+                status=400,
+            )
+
+        # --- Basic validation ---
+        if not pdf_file.name.lower().endswith('.pdf'):
+            return Response(
+                {'detail': 'File must be a PDF.'},
+                status=400,
+            )
+        # Reasonable size cap: 25 MB. RBI MDs are typically 5-50 pages.
+        if pdf_file.size > 25 * 1024 * 1024:
+            return Response(
+                {'detail': f'File too large ({pdf_file.size} bytes). Max 25 MB.'},
+                status=400,
+            )
+
+        # --- Run the pipeline ---
+        meta = MDMetadata(number=number, date=date, title=title)
+        pdf_bytes = pdf_file.read()
+
+        try:
+            work = run_full_pipeline(pdf_bytes, meta)
+        except PipelineError as e:
+            # Map known pipeline errors to appropriate HTTP status
+            msg = str(e)
+            if 'quota' in msg.lower() or 'exhausted' in msg.lower():
+                status = 429
+            elif 'temporarily unavailable' in msg.lower():
+                status = 503
+            elif 'already exists' in msg.lower():
+                status = 400
+            else:
+                status = 400
+            return Response({'detail': msg}, status=status)
+        except Exception as e:
+            # Unexpected — log the full traceback for debugging
+            import logging
+            logging.getLogger(__name__).exception('Upload pipeline crashed')
+            return Response(
+                {'detail': f'Unexpected error: {e}'},
+                status=500,
+            )
+
+        # --- Success — return the new Work's info ---
+        return Response({
+            'id': work.id,
+            'frbr_uri': work.frbr_uri,
+            'numbered_title': work.numbered_title,
+            'title': work.title,
+            'publication_date': str(work.publication_date),
+        }, status=201)

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { apiFetch } from '../api/client';
 import type { MDOwnership, PaginatedResponse } from '../api/types';
+import { UploadMDModal } from '../components/UploadMDModal';
 
 interface Work {
   id: number;
@@ -34,6 +35,10 @@ export function WorksList() {
   const [works, setWorks] = useState<EnrichedWork[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Upload modal state
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadSuccessMessage, setUploadSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchAll() {
@@ -74,8 +79,47 @@ export function WorksList() {
 
   return (
     <div className="app">
-      <h1>RBI Master Directions Registry</h1>
-      <p className="subtitle">{works.length} Master Direction{works.length !== 1 ? 's' : ''} loaded</p>
+      <div className="works-header">
+        <div>
+          <h1>RBI Master Directions Registry</h1>
+          <p className="subtitle">
+            {works.length} Master Direction{works.length !== 1 ? 's' : ''} loaded
+          </p>
+        </div>
+        <button
+          className="btn btn-primary btn-upload"
+          onClick={() => setUploadModalOpen(true)}
+        >
+          + Upload MD
+        </button>
+      </div>
+
+      {uploadSuccessMessage && (
+        <div
+          className="save-toast"
+          style={{ position: 'relative', top: 0, right: 0, marginBottom: '1rem' }}
+        >
+          <span>✓ {uploadSuccessMessage}</span>
+          <button
+            className="save-toast-close"
+            onClick={() => setUploadSuccessMessage(null)}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      <UploadMDModal
+        isOpen={uploadModalOpen}
+        onClose={() => setUploadModalOpen(false)}
+        onSuccess={(uploaded) => {
+          setUploadSuccessMessage(
+            `Uploaded ${uploaded.numbered_title}. Redirecting…`
+          );
+          setTimeout(() => setUploadSuccessMessage(null), 5000);
+        }}
+      />
 
       <ul className="works-list">
         {works.map((work) => (
