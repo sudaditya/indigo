@@ -5,6 +5,7 @@ import { TabNav } from './document-viewer/TabNav';
 import { ContentTab } from './document-viewer/ContentTab';
 import { CoordinationTab } from './document-viewer/CoordinationTab';
 import { AmendmentsTab } from './document-viewer/AmendmentsTab';
+import { FrbrUriBar } from '../components/FrbrUriBar';
 
 interface Work {
   id: number;
@@ -74,6 +75,11 @@ export function DocumentViewer() {
           Published {work.publication_date} · <span className="work-uri">{work.frbr_uri}</span>
         </div>
       </header>
+      
+      <FrbrUriBar
+        frbrUri={work.frbr_uri}
+        expressionDate={work.publication_date}
+      />
 
       <TabNav workId={id} tabs={tabs} />
 

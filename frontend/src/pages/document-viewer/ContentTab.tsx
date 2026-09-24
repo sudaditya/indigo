@@ -7,6 +7,7 @@ import { Modal } from '../../components/Modal';
 import { usePersona } from '../../context/PersonaContext';
 import { apiPost } from '../../api/client';
 import type { DraftAmendmentCreate, DraftAmendment } from '../../api/types';
+import { DocumentMasthead } from './DocumentMasthead';
 
 interface ContentTabProps {
   xml: string | null;
@@ -110,11 +111,14 @@ export function ContentTab({ xml }: ContentTabProps) {
 
   return (
     <div className="document-body">
-      <AknRenderer
-        xml={xml}
-        onSelect={setSelected}
-        selectedEid={selected?.eid || null}
-      />
+      <article className="doc-paper">
+        <DocumentMasthead xml={xml} />
+        <AknRenderer
+          xml={xml}
+          onSelect={setSelected}
+          selectedEid={selected?.eid || null}
+        />
+      </article>
 
       {selected && (
         <div className="selection-action-bar">

@@ -1,3 +1,78 @@
+/* ============================================================
+   RBI MD Registry — Design tokens
+   ============================================================
+   Adopted from the pre-build mockup (rbi-md-registry-v2.jsx).
+   Palette: warm paper-like beige with navy accents, evoking
+   printed regulatory gazettes. Serif for legal content, sans
+   for UI chrome.
+   ============================================================ */
+:root {
+  /* Backgrounds */
+  --bg-page: #FBF7EF;              /* main page — warm beige */
+  --bg-surface: #FFFFFF;           /* cards, modals, editor */
+  --bg-muted: #F5F2EA;             /* subtle contrast on beige */
+  --bg-accent: #FFF4D8;            /* amended text, URI date */
+  --bg-accent-strong: #FFE9B0;     /* hover state on accent */
+  --bg-code: #1C1817;              /* dark mono blocks */
+
+  /* Text */
+  --text-primary: #1C1817;         /* body, headings */
+  --text-secondary: #57534E;       /* meta, labels */
+  --text-muted: #78716C;           /* hints, timestamps */
+  --text-faint: #A8A29E;           /* placeholders */
+  --text-code-inverse: #F5F5F4;    /* on dark mono blocks */
+
+  /* Borders */
+  --border-primary: #D6D3D1;       /* card borders, dividers */
+  --border-strong: #A8A29E;        /* emphasis borders */
+  --border-subtle: #E7E5E4;        /* faint dividers */
+
+  /* Accents */
+  --accent-navy: #0A2540;          /* RBI navy — links, active states, URI */
+  --accent-navy-hover: #1A3A5C;    /* hover on navy */
+  --accent-navy-soft: #E3E9F0;     /* soft navy background (selected paragraph) */
+
+  /* State colors */
+  --state-amended: #FFF4D8;        /* amended provision background */
+  --state-amended-border: #E6B84D; /* amended provision left-border */
+  --state-inserted: #ECFDF5;       /* newly-inserted provision bg */
+  --state-inserted-border: #10B981;
+  --state-repealed: #FEF2F2;       /* repealed provision bg */
+  --state-repealed-border: #EF4444;
+  --state-conflict-medium: #FEF9C3;/* same-target conflict bg */
+  --state-conflict-medium-border: #EAB308;
+  --state-conflict-high: #FEE2E2;  /* delete-vs-edit bg */
+  --state-conflict-high-border: #DC2626;
+  --state-success: #DCFCE7;        /* saved toast bg */
+  --state-success-border: #16A34A;
+
+  /* Typography */
+  --font-serif: 'Georgia', 'Cambria', 'Times New Roman', Times, serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+
+  /* Type scale — for legal content, we go tighter and larger */
+  --text-size-doc-body: 15.5px;    /* main document text */
+  --text-size-doc-line: 1.75;      /* generous leading */
+  --text-size-body: 15px;          /* UI body */
+  --text-size-small: 13px;
+  --text-size-tiny: 11px;
+
+  /* Spacing */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+/* Apply the base tokens */
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background-color: var(--bg-page);   /* warm beige */
+  color: var(--text-primary);
+  font-size: var(--text-size-body);
+}
+
 /* Reset the default Vite styling */
 #root {
   max-width: 1400px;
@@ -9,18 +84,18 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #f5f5f7;
-  color: #1d1d1f;
+  background-color: var(--bg-muted);
+  color: var(--text-primary);
 }
 
 .app h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .subtitle {
-  color: #6e6e73;
+  color: var(--text-secondary);
   margin-bottom: 2rem;
   font-size: 0.95rem;
 }
@@ -46,7 +121,7 @@ body {
   background: white;
   border-radius: 12px;
   padding: 1.5rem;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
@@ -66,7 +141,7 @@ body {
 .work-number {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -91,18 +166,19 @@ body {
 }
 
 .work-title {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
   margin: 0 0 0.75rem 0;
   line-height: 1.4;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .work-meta {
   display: flex;
   gap: 1.5rem;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .work-uri {
@@ -115,7 +191,7 @@ body {
 .back-link {
   display: inline-block;
   margin-bottom: 1.5rem;
-  color: #007aff;
+  color: var(--accent-navy);
   text-decoration: none;
   font-size: 0.95rem;
 }
@@ -126,13 +202,13 @@ body {
 .document-header {
   padding-bottom: 1.5rem;
   margin-bottom: 2rem;
-  border-bottom: 1px solid #d2d2d7;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 .doc-number {
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 0.5rem;
@@ -147,7 +223,7 @@ body {
 
 .doc-meta {
   font-size: 0.9rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 /* Make work cards clickable */
@@ -161,22 +237,24 @@ body {
    AKN document rendering
    ============================================================ */
 .akn-document {
-  max-width: 900px;
-  font-size: 1rem;
-  line-height: 1.65;
-  color: #1d1d1f;
+  max-width: none;         /* paper card constrains width now */
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-primary);
 }
 
 .akn-preface {
+  font-family: var(--font-serif);
   font-style: italic;
-  color: #4a4a4a;
-  padding: 1rem 1.25rem;
-  background: #fafafa;
-  border-left: 3px solid #d2d2d7;
-  margin-bottom: 2rem;
+  color: var(--text-primary);
+  margin: 0 0 2rem 0;
+  padding: 0;
+  background: transparent;
+  border-left: none;
 }
 .akn-preface p {
-  margin: 0;
+  margin: 0 0 0.75rem 0;
 }
 
 .akn-body {
@@ -186,12 +264,16 @@ body {
 }
 
 .akn-chapter-header {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #1d1d1f;
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+  margin: 3rem 0 1.5rem 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  letter-spacing: -0.01em;
 }
+
 .akn-chapter-header .akn-num {
   margin-right: 0.5rem;
 }
@@ -201,11 +283,13 @@ body {
 }
 
 .akn-section-header {
-  font-size: 1.15rem;
-  font-weight: 600;
-  margin: 1.5rem 0 0.75rem 0;
-  color: #1d1d1f;
+  font-family: var(--font-serif);
+  font-size: 15.5px;
+  font-weight: 700;
+  margin: 1.75rem 0 0.5rem 0;
+  color: var(--text-primary);
 }
+
 .akn-section-header .akn-num {
   margin-right: 0.5rem;
 }
@@ -218,7 +302,7 @@ body {
 }
 .akn-para-num {
   font-weight: 500;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-align: right;
   padding-right: 0.5rem;
 }
@@ -233,7 +317,7 @@ body {
   margin: 0.5rem 0 0.5rem 1.5rem;
 }
 .akn-subpara-num {
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-align: right;
   padding-right: 0.5rem;
 }
@@ -255,13 +339,13 @@ body {
 }
 .akn-table th,
 .akn-table td {
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   padding: 0.6rem 0.9rem;
   text-align: left;
   vertical-align: top;
 }
 .akn-table th {
-  background: #f5f5f7;
+  background: var(--bg-muted);
   font-weight: 600;
 }
 .akn-table td p {
@@ -278,13 +362,13 @@ body {
   gap: 0.25rem;
   margin-top: 1.5rem;
   margin-bottom: 0;
-  border-bottom: 1px solid #d2d2d7;
+  border-bottom: 1px solid var(--border-primary);
   padding: 0;
 }
 
 .tab-link {
   padding: 0.75rem 1.25rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
@@ -294,12 +378,12 @@ body {
 }
 
 .tab-link:hover {
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .tab-link-active {
-  color: #007aff;
-  border-bottom-color: #007aff;
+  color: var(--accent-navy);
+  border-bottom-color: var(--accent-navy);
 }
 
 .tab-link-disabled {
@@ -316,8 +400,8 @@ body {
 .tab-badge {
   font-size: 0.7rem;
   padding: 0.1rem 0.4rem;
-  background: #f5f5f7;
-  color: #8e8e93;
+  background: var(--bg-muted);
+  color: var(--text-muted);
   border-radius: 3px;
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -331,7 +415,7 @@ body {
 .tab-placeholder {
   padding: 3rem 2rem;
   text-align: center;
-  color: #6e6e73;
+  color: var(--text-secondary);
   background: #fafafa;
   border-radius: 8px;
 }
@@ -353,7 +437,7 @@ body {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 1rem 0;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .coord-empty {
@@ -361,7 +445,7 @@ body {
   background: #fafafa;
   border-radius: 8px;
   text-align: center;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .coord-ownership {
@@ -370,13 +454,13 @@ body {
   gap: 1rem;
   padding: 1rem 1.25rem;
   background: #f0f7ff;
-  border-left: 3px solid #007aff;
+  border-left: 3px solid var(--accent-navy);
   border-radius: 4px;
 }
 
 .coord-ownership-label {
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -384,14 +468,14 @@ body {
 
 .coord-ownership-value {
   font-size: 1rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .coord-ownership-code {
   font-family: 'SF Mono', Monaco, monospace;
   font-size: 0.8rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   margin-left: 0.75rem;
   font-weight: 400;
 }
@@ -405,7 +489,7 @@ body {
 /* ---- Draft group card ---- */
 .draft-group {
   background: white;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 10px;
   padding: 1rem 1.25rem;
 }
@@ -439,7 +523,7 @@ body {
   gap: 0.5rem;
   font-family: 'SF Mono', Monaco, monospace;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 
 .draft-group-eid-label {
@@ -447,7 +531,7 @@ body {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #8e8e93;
+  color: var(--text-muted);
   font-weight: 600;
 }
 
@@ -481,7 +565,7 @@ body {
   padding: 0.9rem 1rem;
   background: #fafafa;
   border-radius: 6px;
-  border-left: 3px solid #d2d2d7;
+  border-left: 3px solid var(--border-primary);
 }
 
 .draft-card-header {
@@ -527,14 +611,14 @@ body {
 }
 
 .draft-author-unit {
-  color: #6e6e73;
+  color: var(--text-secondary);
   margin-left: 0.5rem;
   font-size: 0.85rem;
 }
 
 .draft-label {
   font-size: 0.75rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-weight: 600;
@@ -549,7 +633,7 @@ body {
 .draft-text {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .draft-text-muted {
@@ -559,7 +643,7 @@ body {
 
 .draft-footer {
   font-size: 0.75rem;
-  color: #8e8e93;
+  color: var(--text-muted);
   margin-top: 0.5rem;
 }
 /* ============================================================
@@ -572,13 +656,13 @@ body {
   padding-top: 0.75rem;
   border-top: 1px solid #f0f0f0;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   flex-wrap: wrap;
 }
 
 .work-nodal strong {
   font-family: 'SF Mono', Monaco, monospace;
-  color: #1d1d1f;
+  color: var(--text-primary);
   background: #f0f7ff;
   padding: 0.05rem 0.4rem;
   border-radius: 3px;
@@ -597,7 +681,7 @@ body {
    TipTap editor (minimal — expand in later sessions)
    ============================================================ */
 .tiptap-wrapper {
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 8px;
   padding: 1rem 1.25rem;
   background: white;
@@ -609,7 +693,7 @@ body {
   outline: none;
   font-size: 1rem;
   line-height: 1.6;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .tiptap-wrapper .ProseMirror:focus-visible {
@@ -645,12 +729,12 @@ body {
 .amendments-scratchpad-intro h3 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .amendments-scratchpad-intro p {
   margin: 0;
-  color: #6e6e73;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 
@@ -658,12 +742,12 @@ body {
   padding: 1rem 1.25rem;
   background: #fafafa;
   border-radius: 8px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--border-subtle);
 }
 
 .scratchpad-output summary {
   cursor: pointer;
-  color: #6e6e73;
+  color: var(--text-secondary);
   font-size: 0.85rem;
   user-select: none;
 }
@@ -671,8 +755,8 @@ body {
 .scratchpad-output pre {
   margin: 0.75rem 0 0 0;
   padding: 0.75rem;
-  background: #1d1d1f;
-  color: #f5f5f7;
+  background: var(--text-primary);
+  color: var(--bg-muted);
   border-radius: 6px;
   font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
   font-size: 0.8rem;
@@ -700,13 +784,13 @@ body {
   font-size: 0.85rem;
   padding: 0.35rem 0.75rem;
   background: white;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .persona-label {
-  color: #6e6e73;
+  color: var(--text-secondary);
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -717,7 +801,7 @@ body {
   border: none;
   background: transparent;
   font-size: 0.9rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
   cursor: pointer;
   padding: 0.1rem 0;
   min-width: 14rem;
@@ -749,7 +833,7 @@ body {
 
 .akn-selectable.akn-selected {
   background: #e3f2fd;
-  box-shadow: 0 0 0 2px #007aff;
+  box-shadow: 0 0 0 2px var(--accent-navy);
 }
 
 /* Ensure nested selectables don't stack backgrounds oddly */
@@ -766,7 +850,7 @@ body {
   margin-top: 2rem;
   padding: 0.9rem 1.25rem;
   background: white;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -786,7 +870,7 @@ body {
 
 .selection-label {
   font-size: 0.75rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
@@ -796,8 +880,8 @@ body {
 .selection-eid {
   font-family: 'SF Mono', Monaco, monospace;
   font-size: 0.85rem;
-  color: #1d1d1f;
-  background: #f5f5f7;
+  color: var(--text-primary);
+  background: var(--bg-muted);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   white-space: nowrap;
@@ -805,7 +889,7 @@ body {
 
 .selection-preview {
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -830,19 +914,19 @@ body {
 }
 
 .btn-primary {
-  background: #007aff;
+  background: var(--accent-navy);
   color: white;
 }
 .btn-primary:hover {
-  background: #0062cc;
+  background: var(--accent-navy-hover);
 }
 
 .btn-secondary {
-  background: #f5f5f7;
-  color: #1d1d1f;
+  background: var(--bg-muted);
+  color: var(--text-primary);
 }
 .btn-secondary:hover {
-  background: #e5e5ea;
+  background: var(--border-subtle);
 }
 
 /* ============================================================
@@ -879,7 +963,7 @@ body {
 
 .modal-header {
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #e5e5ea;
+  border-bottom: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -890,7 +974,7 @@ body {
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0;
-  color: #1d1d1f;
+  color: var(--text-primary);
   font-family: 'SF Mono', Monaco, monospace;
 }
 
@@ -899,11 +983,11 @@ body {
   border: none;
   font-size: 1.6rem;
   cursor: pointer;
-  color: #6e6e73;
+  color: var(--text-secondary);
   padding: 0 0.4rem;
   line-height: 1;
 }
-.modal-close:hover { color: #1d1d1f; }
+.modal-close:hover { color: var(--text-primary); }
 
 .modal-body {
   padding: 1.5rem;
@@ -913,7 +997,7 @@ body {
 
 .modal-footer {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e5ea;
+  border-top: 1px solid var(--border-subtle);
   background: #fafafa;
   display: flex;
   align-items: center;
@@ -923,10 +1007,10 @@ body {
 
 .modal-footer-meta {
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
 }
 .modal-footer-meta strong {
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .modal-footer-actions {
@@ -936,12 +1020,12 @@ body {
 
 /* Disabled button style */
 .btn:disabled {
-  background: #e5e5ea;
-  color: #8e8e93;
+  background: var(--border-subtle);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 .btn:disabled:hover {
-  background: #e5e5ea;
+  background: var(--border-subtle);
 }
 
 /* ============================================================
@@ -951,10 +1035,10 @@ body {
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;
   background: #f0f7ff;
-  border-left: 3px solid #007aff;
+  border-left: 3px solid var(--accent-navy);
   border-radius: 4px;
   font-size: 0.9rem;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 .editor-modal-instructions p {
   margin: 0;
@@ -972,21 +1056,21 @@ body {
   padding: 0.75rem 1rem;
   background: #fafafa;
   border-radius: 6px;
-  border: 1px solid #e5e5ea;
+  border: 1px solid var(--border-subtle);
 }
 
 .editor-modal-diff summary {
   cursor: pointer;
   font-size: 0.85rem;
-  color: #6e6e73;
+  color: var(--text-secondary);
   user-select: none;
 }
 
 .editor-modal-diff pre {
   margin: 0.5rem 0 0 0;
   padding: 0.75rem;
-  background: #1d1d1f;
-  color: #f5f5f7;
+  background: var(--text-primary);
+  color: var(--bg-muted);
   border-radius: 6px;
   font-family: 'SF Mono', Monaco, monospace;
   font-size: 0.75rem;
@@ -1007,19 +1091,19 @@ body {
 .rationale-field label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .field-optional {
   font-weight: 400;
-  color: #8e8e93;
+  color: var(--text-muted);
   font-size: 0.8rem;
 }
 
 .rationale-textarea {
   width: 100%;
   padding: 0.6rem 0.8rem;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   font-family: inherit;
   font-size: 0.9rem;
@@ -1030,8 +1114,8 @@ body {
 
 .rationale-textarea:focus {
   outline: none;
-  border-color: #007aff;
-  box-shadow: 0 0 0 3px #007aff20;
+  border-color: var(--accent-navy);
+  box-shadow: 0 0 0 3px var(--accent-navy)20;
 }
 
 /* ============================================================
@@ -1118,7 +1202,7 @@ body {
 .upload-instructions {
   padding: 0.75rem 1rem;
   background: #f0f7ff;
-  border-left: 3px solid #007aff;
+  border-left: 3px solid var(--accent-navy);
   border-radius: 4px;
   font-size: 0.9rem;
 }
@@ -1135,7 +1219,7 @@ body {
 .form-field label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #1d1d1f;
+  color: var(--text-primary);
 }
 
 .required {
@@ -1146,7 +1230,7 @@ body {
 .form-field input[type="text"],
 .form-field input[type="date"] {
   padding: 0.55rem 0.75rem;
-  border: 1px solid #d2d2d7;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   font-family: inherit;
   font-size: 0.9rem;
@@ -1156,8 +1240,8 @@ body {
 .form-field input[type="text"]:focus,
 .form-field input[type="date"]:focus {
   outline: none;
-  border-color: #007aff;
-  box-shadow: 0 0 0 3px #007aff20;
+  border-color: var(--accent-navy);
+  box-shadow: 0 0 0 3px var(--accent-navy)20;
 }
 
 .form-field input[type="file"] {
@@ -1166,14 +1250,14 @@ body {
 }
 
 .form-field input:disabled {
-  background: #f5f5f7;
-  color: #8e8e93;
+  background: var(--bg-muted);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
 .field-hint {
   font-size: 0.8rem;
-  color: #8e8e93;
+  color: var(--text-muted);
 }
 
 .file-info {
@@ -1197,7 +1281,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  color: #007aff;
+  color: var(--accent-navy);
   font-size: 0.85rem;
   font-weight: 500;
 }
@@ -1205,8 +1289,8 @@ body {
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid #007aff20;
-  border-top-color: #007aff;
+  border: 2px solid var(--accent-navy)20;
+  border-top-color: var(--accent-navy);
   border-radius: 50%;
   display: inline-block;
   animation: spin 0.7s linear infinite;
@@ -1214,4 +1298,233 @@ body {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   Paper-card document treatment
+   ============================================================
+   Content sits on white paper with generous margins on beige.
+   Line length capped for reading comfort.
+   ============================================================ */
+.document-body {
+  padding: 2.5rem 0;
+}
+
+.doc-paper {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3.5rem 4rem 5rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 2px 12px rgba(28, 24, 23, 0.04);
+}
+
+/* Masthead */
+.doc-masthead {
+  text-align: center;
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.doc-masthead-issuer {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.doc-masthead-refs {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.doc-masthead-title {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+}
+
+.doc-masthead-rendered {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+/* ============================================================
+   FRBR URI bar
+   ============================================================
+   Displays the addressable identifier of the current expression,
+   with the date styled as a time-travel affordance. Sits between
+   the document metadata header and the content tabs.
+   ============================================================ */
+.frbr-bar {
+  border-top: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-page);
+  margin-top: 0.5rem;
+}
+
+.frbr-bar-inner {
+  padding: 0.75rem 0;
+}
+
+.frbr-bar-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.frbr-bar-dot {
+  color: var(--text-faint);
+}
+
+.frbr-bar-hint {
+  text-transform: none;
+  letter-spacing: normal;
+  font-style: italic;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.frbr-bar-uri {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 14px;
+}
+
+.frbr-bar-uri-fixed {
+  color: var(--text-secondary);
+}
+
+.frbr-bar-uri-lang {
+  color: var(--text-faint);
+}
+
+.frbr-bar-date {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--accent-navy);
+  font-weight: 600;
+  background: var(--bg-accent);
+  border: none;
+  border-bottom: 2px solid var(--accent-navy);
+  padding: 0.1rem 0.5rem;
+  margin: 0 0.05rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.frbr-bar-date:hover:not(:disabled) {
+  background: var(--bg-accent-strong);
+}
+
+.frbr-bar-date:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+/* ============================================================
+   Cross-reference styling
+   ============================================================
+   Detected regulatory instrument references (other MDs, RBI/BR Acts)
+   get a dotted underline to signal "this is a link to another document"
+   — even though we don't yet resolve them.
+   ============================================================ */
+.akn-crossref {
+  color: var(--accent-navy);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: help;
+  transition: background-color 0.15s ease;
+}
+
+.akn-crossref:hover {
+  background-color: var(--bg-accent);
+}
+/* ============================================================
+   Tooltip
+   ============================================================
+   Fast-appearing, cleanly-styled hover explanation.
+   Replaces browser's slow, un-stylable native `title` tooltips.
+   ============================================================ */
+.tooltip-trigger {
+  position: relative;
+  display: inline;
+}
+
+.tooltip {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  padding: 0.4rem 0.7rem;
+  background: var(--bg-code);
+  color: var(--text-code-inverse);
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  max-width: 260px;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(28, 24, 23, 0.15);
+  animation: tooltipFade 0.12s ease-out;
+}
+
+/* Allow multi-line tooltips */
+.tooltip {
+  white-space: normal;
+  min-width: max-content;
+}
+
+@keyframes tooltipFade {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Top placement (default) — sits above the trigger */
+.tooltip-top {
+  bottom: calc(100% + 8px);
+}
+.tooltip-top::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--bg-code);
+}
+
+/* Bottom placement — sits below the trigger */
+.tooltip-bottom {
+  top: calc(100% + 8px);
+}
+.tooltip-bottom::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--bg-code);
 }

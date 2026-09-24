@@ -1,3 +1,4 @@
+import { Tooltip } from './Tooltip';
 /**
  * AknRenderer — parses AKN 3.0 XML and renders it as HTML.
  *
@@ -63,6 +64,55 @@ function getDirectText(node: Element): string {
     }
   }
   return text.trim();
+}
+
+/**
+ * Match RBI Master Direction cross-references in body text.
+ * Pattern: "Reserve Bank of India (Anything) Directions, YYYY"
+ * Also matches: "Banking Regulation Act, YYYY", "RBI Act, YYYY"
+ *
+ * Returns an array of React nodes with matches wrapped in <span>.
+ */
+function renderTextWithCrossRefs(text: string): React.ReactNode {
+  if (!text) return text;
+
+  // Two patterns:
+  // 1. "Reserve Bank of India (…) Directions, YYYY" — MD references
+  // 2. "Banking Regulation Act, YYYY" | "Reserve Bank of India Act, YYYY"
+  //    — statute references
+  const pattern = /(Reserve Bank of India \([^)]+\) Directions, \d{4}|Banking Regulation Act,? \d{4}|Reserve Bank of India Act,? \d{4})/g;
+
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let idx = 0;
+
+  while ((match = pattern.exec(text)) !== null) {
+    // Push text before the match
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    // Push the styled cross-reference
+    parts.push(
+      <Tooltip
+        key={`xref-${idx++}`}
+        content="Cross-reference to another regulatory instrument"
+      >
+        <span className="akn-crossref">
+          {match[0]}
+        </span>
+      </Tooltip>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Push trailing text after the last match
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
 }
 
 export function AknRenderer({ xml, onSelect, selectedEid }: AknRendererProps) {
@@ -221,8 +271,8 @@ export function AknRenderer({ xml, onSelect, selectedEid }: AknRendererProps) {
         return <div key={key} className={`akn-${tag}`}>{children}</div>;
 
       case 'p':
-        // Actual paragraph text
-        return <p key={key}>{el.textContent}</p>;
+        // Actual paragraph text — with cross-references highlighted
+        return <p key={key}>{renderTextWithCrossRefs(el.textContent || '')}</p>;
 
       case 'table':
         return <table key={key} className="akn-table">{children}</table>;
@@ -240,7 +290,7 @@ export function AknRenderer({ xml, onSelect, selectedEid }: AknRendererProps) {
       case 'td':
         return (
           <td key={key} colSpan={parseInt(el.getAttribute('colspan') || '1')}>
-            {children.length > 0 ? children : el.textContent}
+            {children.length > 0 ? children : renderTextWithCrossRefs(el.textContent || '')}
           </td>
         );
 

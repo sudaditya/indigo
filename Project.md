@@ -838,6 +838,143 @@ This is arguably better than most enterprise software handles third-party
 failures. The demo story is unaffected — "click Upload, wait 30 sec, 
 sometimes Gemini needs a retry, error handling is graceful."
 
+### Session 15 — 2026-09-24 (evening) — Reskin: align UI with pre-build mockup
+
+**Objective:** Adopt the visual language from the pre-build mockup 
+(rbi-md-registry-v2.jsx) for what we've built. Cost of doing this now vs
+later: single session ~90 min now, cheaper than reskinning many pages later.
+
+**Strategic conversation before code:**
+
+Reviewed the mockup carefully. Three categories of gap:
+1. Visual language — serif typography, warm beige palette, document-like 
+   layout. Cheap to align now.
+2. Missing features that don't need new data — FRBR URI bar, signatory 
+   block, cross-references. Cheap to add.
+3. Missing features needing new data — Timeline, Comparison, inline 
+   amendment markers. Depend on Phase 5 amendment engine.
+
+Decision: adopt Tier 1 and Tier 2 (visual + cheap features) this session.
+Defer Tier 3 to Phase 5 when amendment data lands.
+
+**Architectural discussion — one clarification, one new backlog item:**
+
+*Why data model and AKN XML stay separate (question raised, answered):*
+AKN XML = the document text itself (paragraphs, tables, structure).
+Django models (WorkingUnit, MDOwnership, DraftAmendment) = workflow 
+metadata about the document (who owns it, who's editing, coordination
+state). Referencing content by target_eid, not duplicating it. Same
+design as Indigo's original architecture. Merging would either bloat 
+XML with workflow state or fragment content across relational tables.
+Working as intended, no fix needed.
+
+*Amendment-as-batch refactor (new backlog):*
+Mockup treats an "Amendment Direction, 2026" as a whole instrument — 
+title, reference codes, publication + effective dates, drafting team,
+rationale, and multiple modifications inside it. Our current 
+DraftAmendment model is one-change-per-record. To match reality, we
+need: new Amendment model as parent instrument, DraftAmendment 
+renamed to Modification with FK to Amendment, UI flow to start an
+amendment and add modifications to it. ~2 sessions. Deferred to 
+after tracker changes so the new flow inherits our polished visual
+language.
+
+**Step 1 — CSS design tokens + typography (~15 min):**
+- New :root block with design tokens (--bg-page beige, --accent-navy,
+  yellow amendment state, serif/sans/mono families, etc.)
+- Bulk find-replace hardcoded colors to var(--...) throughout App.css.
+- Body defaults to serif for legal content, sans for UI chrome.
+- Chapter headings: serif bold, centered, no underline (was underlined
+  block heading). Section headings: serif bold, left-aligned.
+
+**Step 2 — Document masthead + paper card (~30 min):**
+- Content tab now wraps AknRenderer in .doc-paper: white card, centered,
+  max-width 720px, generous internal padding, sits on beige page.
+- New DocumentMasthead.tsx: reads FRBR meta from XML, displays 
+  "RESERVE BANK OF INDIA" small-caps letterspaced, "Master Direction 
+  N of YYYY" mono, big serif title centered, "Rendered as of [long date]"
+  italic. Matches mockup's document-header treatment.
+- Preface rewritten from gray-boxed blockquote to inline italic serif 
+  body text (as it appears in real gazette).
+- Result: content genuinely reads like a printed regulation.
+
+**Step 3 — FRBR URI bar (~15 min):**
+- New FrbrUriBar.tsx: displays full FRBR URI with expression date
+  highlighted yellow with navy underline, styled as clickable pill.
+- Actual time-travel deferred to Phase 5 (needs amendment engine to 
+  render document as-of a past date). Button is disabled today; 
+  tooltip explains "coming in Phase 5."
+- Removed duplicate FRBR URI from doc-meta line (now only in bar).
+
+**Step 4a — Cross-reference detection (~10 min):**
+- renderTextWithCrossRefs() in AknRenderer regex-matches:
+  - "Reserve Bank of India (X) Directions, YYYY" 
+  - "Banking Regulation Act, YYYY"
+  - "Reserve Bank of India Act, YYYY"
+- Matches wrapped in .akn-crossref span with dotted navy underline.
+- Applied to <p> tags and <td> content in the renderer.
+
+**Step 4b — Reusable Tooltip component (~15 min):**
+- User noticed native `title=` tooltips are slow to appear, hard to see,
+  unstylable. Real problem: browser default tooltips have consistently 
+  bad UX everywhere they're used.
+- Built Tooltip.tsx: React component with 300ms delay-on-hover, instant
+  hide-on-leave, auto-flip top/bottom based on viewport space, dark
+  background matching design tokens, arrow pointing at trigger, keyboard
+  accessible (focus/blur handlers), animated in with fadeIn.
+- Applied to: cross-references (Step 4a), FRBR URI date button (Step 3).
+- Still to apply: SOON tab badges, disabled Save draft button, any 
+  future disabled-with-explanation states. Deferred to next session's
+  polish (see backlog).
+
+**Files added:**
+- frontend/src/components/Tooltip.tsx
+- frontend/src/components/FrbrUriBar.tsx
+- frontend/src/pages/document-viewer/DocumentMasthead.tsx
+
+**Files modified:**
+- frontend/src/App.css (design tokens block, all rules updated to use vars,
+  paper card, masthead, FRBR bar, tooltip, cross-ref styles)
+- frontend/src/components/AknRenderer.tsx (cross-ref detection + Tooltip
+  integration; chapter heading style refinements)
+- frontend/src/pages/document-viewer/ContentTab.tsx (paper card wrapper, 
+  masthead insertion)
+- frontend/src/pages/DocumentViewer.tsx (FrbrUriBar added between header 
+  and TabNav, duplicated FRBR URI removed from doc-meta)
+
+**What was NOT reskinned this session — for next session:**
+- Coordination tab (conflict cards, draft cards — still Apple-style blue)
+- Amendments tab / editor modal (still Apple-style)
+- Works list cards (partially reskinned — serif title, but card frame 
+  and Upload button still Apple-style)
+- Header chrome above tabs (persona switcher, back-to-works, page title)
+
+Reason for stopping short of a full reskin: (a) session budget, and 
+(b) once we lock in the design tokens, remaining reskinning is 
+mechanical class-by-class work with almost no visual-decision risk. 
+Best done as a single focused pass at start of Session 16 rather than 
+mixed with feature work.
+
+**Session 16 plan (short reskinning pass, then feature work):**
+- Complete visual reskin: Coordination, Amendments, Works list, header
+  chrome (~45 min mechanical work)
+- Then either: track changes prototype in editor, OR the amendment-as-
+  batch refactor. Depends on which feels more useful for demo.
+
+### Phase status update
+- [x] Phase 0 — Indigo running with India as Place
+- [x] Phase 2 — PDF → AKN pipeline solid, 3 MDs loaded, upload from UI
+- [~] Phase 3 — React frontend: Works list, Document viewer (tabbed, 
+  reskinned to mockup language), Coordination tab (built, awaiting 
+  reskin), Upload MD flow (built, awaiting reskin).
+- [~] Phase 4 — Editor prototype substantially done. Click-to-select, 
+  per-provision editor, save-as-DraftAmendment flow. Track changes,
+  chapter/section-scoped editing: Sessions 17+.
+- [ ] Phase 1 — Strip Indigo browser UI (deferred; use only Indigo's API/engine).
+- [ ] Phase 5 — Historical amendment migration + time-travel + Timeline
+  + Comparison views + inline amendment markers.
+
+
 ## Backlog — deferred fixes
 
 **Pipeline / ingestion:**
@@ -885,6 +1022,27 @@ sometimes Gemini needs a retry, error handling is graceful."
 - **Timeline tab still a placeholder:** Marked "SOON" in TabNav. Would
   show amendment history over time for a given MD. Depends on Phase 5
   historical migration work.
+  - **Complete visual reskin (Session 16 opener):** Coordination cards, 
+  Amendments modal, Works list card frames, header chrome (persona
+  switcher, back-to-works, page title above tabs) still use the pre-Session-15
+  Apple-style palette. Mechanical CSS pass to update — no visual decisions
+  remaining, design tokens are locked in.
+- **Doc title appears twice on Content tab:** The title shows once in
+  the page header above the tabs (chrome), and again inside the masthead
+  on the paper card (document). Not broken, just visually redundant.
+  Remove the chrome-level title, since users now have the paper masthead
+  for identification. Trivial fix, 2 min.
+- **Remaining native `title=` tooltips to swap to Tooltip component:**
+  SOON tab badges (Timeline, Amendments), disabled Save draft button in
+  the editor modal, any future disabled states. Small, mechanical.
+
+**Data / content:**
+- **ASCII hyphen vs en-dash in ingested MD titles:** MD 172 shows 
+  "Commercial Banks - Climate Finance" (ASCII hyphen), should be 
+  "Commercial Banks – Climate Finance" (en-dash). Source of truth is 
+  the PDF cover page. Fix: either (a) update Gemini prompt to normalize
+  dashes, or (b) post-processing pass on ingested titles. Cosmetic but
+  visible on masthead.
 
 **Backend/infrastructure:**
 - **CORS is dev-permissive:** Django CorsMiddleware active with no
@@ -903,3 +1061,17 @@ sometimes Gemini needs a retry, error handling is graceful."
   Fix: `docker compose restart web`. Rule of thumb: if
   `docker compose logs web` shows a traceback, always restart before
   troubleshooting further.
+
+  **Feature / architecture (Phase 4+ product decisions):**
+- **Amendment-as-batch refactor:** Current DraftAmendment = 1 change.
+  Real RBI amendment instruments bundle metadata (title, effective date,
+  drafting team, rationale) + multiple modifications. Need Amendment
+  model (parent) + Modification (renamed DraftAmendment, FK to Amendment)
+  + "Start Amendment" UI flow. ~2 sessions. Better done AFTER track changes
+  so the new flow inherits polished visual language.
+- **Track changes in editor:** Not yet started. TipTap Pro extension
+  (@tiptap-pro/extension-tracked-changes) or MIT community alternatives.
+  ~2-3 sessions. Session 16 candidate.
+- **Amendment engine + Timeline + Comparison views:** All depend on 
+  historical migration (Phase 5). Once each MD has its amendment history
+  attached, all three views become buildable in parallel.
